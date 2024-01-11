@@ -25,16 +25,18 @@ import {
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Splash from './src/screens/Splash';
 import SignUp from './src/screens/SignUp';
+import CreateAccounts from './src/screens/CreateAccounts';
 
 const Stack = createNativeStackNavigator();
 
 const App = ()=> {
-  console.log(Stack.Navigator);
+  // console.log(Stack.Navigator);
   return (
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen name="splash" component={Splash} options={{headerShown : false}}/> */}
-        <Stack.Screen name="signUp" component={SignUp} options={{headerShown : false}} />
+        {/* <Stack.Screen name="signUp" component={SignUp} options={{headerShown : false}} /> */}
+        <Stack.Screen name="createAccount" component={CreateAccounts} options={{headerShown : false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
