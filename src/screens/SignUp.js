@@ -1,14 +1,14 @@
 import React from 'react'
 import { StyleSheet, View , Text , Image , Button} from 'react-native'
 import SVGImg from '../rcs/signupFooter.svg';
-const SignUp = () => {
+const SignUp = ({navigation}) => {
   return (
     <View style={styles.container}>
         <View style={styles.header}>
             <Image source={require('../rcs/logo.png')} />
             <Text style={styles.text1}>Mileage Tracker</Text>
             <Text style={styles.text2}>Create an Account to get Started</Text>
-            <Button title='Sign Up' style={styles.button} onPress={()=>{}}/>
+            <Button title='Sign Up' style={styles.button} onPress={()=>navigation.navigate('createAccount')}/>
         </View>
         <View>
             <Image source={require('../rcs/signupFooter.png')}/>

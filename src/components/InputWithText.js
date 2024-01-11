@@ -1,17 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View  ,StyleSheet, TextInput , Text} from 'react-native'
-const InputWithText = ({text}) => {
+
+const InputWithText = ({text,required , handleInputs , id, errorText , validationFun , handleError}) => {
+    const [error , setError] = useState(false);
+    const onChangeInput = (text)=>{
+        handleInputs(id , text);
+        if(required && !text){
+            errorText = 'text cannot be empty';
+            setError(true);
+            handleError(true);
+            return;
+        }
+        setError(!validationFun(text));
+        console.log(error);
+        handleError(error);
+    }
   return (
     <View style ={styles.container}>
-        <Text style={styles.InputText}>{text}</Text>
-        <TextInput style={styles.input}/>
+        <Text style={styles.InputText}>{text} {required && <Text style={styles.star}>*</Text>}</Text>
+        <TextInput style={styles.input} onChangeText={onChangeInput}/>
+        {error && <Text style={styles.error}>{errorText}</Text>}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
     container :{
-        marginLeft : 30
+        marginLeft : 30,
     },
     input :{
         height: 40,
@@ -25,6 +40,11 @@ const styles = StyleSheet.create({
     },InputText :{
         color : 'black',
         fontSize : 15,
+    },star :{
+        color : 'crimson'
+    },error :{
+        color : 'crimson',
+        marginTop : 5
     }
 
 })

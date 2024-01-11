@@ -26,6 +26,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Splash from './src/screens/Splash';
 import SignUp from './src/screens/SignUp';
 import CreateAccounts from './src/screens/CreateAccounts';
+import SetPasscode from './src/screens/SetPasscode';
+import ProfilePage from './src/screens/ProfilePage';
+import Navigation from './src/components/Navigation';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,8 +38,10 @@ const App = ()=> {
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen name="splash" component={Splash} options={{headerShown : false}}/> */}
-        {/* <Stack.Screen name="signUp" component={SignUp} options={{headerShown : false}} /> */}
+        <Stack.Screen name="signUp" component={SignUp} options={{headerShown : false}} />
         <Stack.Screen name="createAccount" component={CreateAccounts} options={{headerShown : false}} />
+        <Stack.Screen name="setPasscode" component={SetPasscode} options={{headerShown : false}} />
+        <Stack.Screen name="navigation" component={Navigation} options={{headerShown : false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

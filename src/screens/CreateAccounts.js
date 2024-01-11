@@ -1,18 +1,51 @@
 import React, { useState } from 'react'
-import { View  ,StyleSheet , Text , Button , Image} from 'react-native'
+import { View  ,StyleSheet , Text , Button , Image , Pressable} from 'react-native'
 import InputWithText from '../components/InputWithText'
+import BackButton from '../components/BackButton'
+import CheckBox from '../components/CheckBox'
+// import CheckBox from 'react-native-check-box'
 // import CheckBox from '@react-native-community/checkbox';
-const CreateAccounts = () => {
+const CreateAccounts = ({navigation}) => {
     // const [toggleCheckBox, setToggleCheckBox] = useState(false)
+    const [checked , setChecked] = useState(false);
+    const [data , setData]  = useState(['' , '' , '']);
+
+    const [error , setError] = useState(false)
+
+    const handleInputs =  (index , changedData)=>{
+        data[index] = changedData;
+        setData(data);
+        console.log(data);
+    }
+
+    const nameCheck = (name) =>{
+        const regex = /[0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
+        return !regex.test(name);
+    }
+
+    function isValidGmail(email) {
+        const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        return gmailRegex.test(email);
+      }
+
+      const handleError = (err)=>{
+            setError((error)=>error && err);
+            console.log(error);
+      }
+
   return (
     <View style={styles.container}>
-        <Image style={styles.image} source={require('../rcs/lArrow.png')} />
+        <BackButton style={styles.image} dest ='signUp' navigation={navigation}/>
+
+        {/* <Pressable onPress={()=>navigation.navigate('signUp')}>
+            <Image onPress={()=> navigation.navigate('signUp')} style={styles.image} source={require('../rcs/lArrow.png')} />
+        </Pressable> */}
         <View style = {styles.top}>
             <Text style={styles.heading}>Create Account</Text>
             <View style={styles.inputscontainer}>
-                <InputWithText text='Name' />
-                <InputWithText text='Nickname' />
-                <InputWithText text='Email Address' />
+                <InputWithText handleError={handleError} text='Name' required={true} handleInputs={handleInputs} id={0} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
+                <InputWithText handleError={handleError} text='Nickname' required={false} handleInputs={handleInputs} id={1} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
+                <InputWithText handleError={handleError} text='Email Address' required={true} handleInputs={handleInputs} id={2} errorText='Invalid email' validationFun={isValidGmail}/>
             </View>
         </View>
         <View style={styles.bottom}>
@@ -23,10 +56,11 @@ const CreateAccounts = () => {
                 onValueChange={(newValue) => setToggleCheckBox(newValue)}
                 onCheckColor = "orange"
                 /> */}
-                <Text>Tick this box to confirm that you are at least 18years old and agree to our <Text style={styles.TandC}> Terms & conditions</Text></Text>
+                <CheckBox setChecked={setChecked}/>
+                <Text>Tick this box to confirm that you are at least 18 years old and agree to our <Text style={checked && styles.TandC}> Terms & conditions</Text></Text>
             </View>
-
-            <Button style={styles.button} title="Continue" />
+                
+            <Button  style={styles.button} title="Continue" disabled={ !checked}/>
 
 
         </View>
@@ -46,7 +80,7 @@ const styles = StyleSheet.create({
     },
     top :{
         flex : 0.8,
-        marginTop : 70,
+        marginTop :20,
         marginLeft : 20
         // alignItems : 'center'
     },
@@ -75,7 +109,11 @@ const styles = StyleSheet.create({
     cBoxContainer : {
         marginBottom : 10,
         marginTop : 10,
-        padding : 5
+        padding : 5,
+        flexDirection : 'row',
+        alignItems : 'center',
+        padding : 5,
+        
         // backgroundColor : "black"
     },TandC : {
         color : "#B84646"
