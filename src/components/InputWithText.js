@@ -8,12 +8,12 @@ const InputWithText = ({text,required , handleInputs , id, errorText , validatio
         if(required && !text){
             errorText = 'text cannot be empty';
             setError(true);
-            handleError(true);
+            handleError(id ,true);
             return;
         }
         setError(!validationFun(text));
-        console.log(error);
-        handleError(error);
+        // console.log("y" ,error, !validationFun(text));
+        handleError(id ,!validationFun(text));
     }
   return (
     <View style ={styles.container}>

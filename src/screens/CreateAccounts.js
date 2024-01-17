@@ -3,34 +3,112 @@ import { View  ,StyleSheet , Text , Button , Image , Pressable} from 'react-nati
 import InputWithText from '../components/InputWithText'
 import BackButton from '../components/BackButton'
 import CheckBox from '../components/CheckBox'
-// import CheckBox from 'react-native-check-box'
-// import CheckBox from '@react-native-community/checkbox';
+
+import {useRealm , useQuery} from '@realm/react';
+import {Users} from '../Database/models/UsersSchema';
+import useUserStore from '../state/Users'
+// import { useUserStore } from '../state/Users'
+
+
 const CreateAccounts = ({navigation}) => {
-    // const [toggleCheckBox, setToggleCheckBox] = useState(false)
+    const {name , nickname , email , setUser} = useUserStore();
+    // console.log(getUser);
+    // console.log("y" ,useQuery);
+    const realm = useRealm();
+    // const users = useQuery(Users);
     const [checked , setChecked] = useState(false);
     const [data , setData]  = useState(['' , '' , '']);
 
-    const [error , setError] = useState(false)
+    const [error1 , setError1] = useState('');
+    const [error2 , setError2] = useState('');
+
+    const [error3 , setError3] = useState('');
+    // const setUserState = useUserStore((state) => state.setUser({name : data[0] , nickname : data[1] , email : data[2]}));
+
+    // const setCurUserFalse = async (data) => {
+      
+    //     console.log('Done.')
+    // }
+
+    // const findAndUpdateCurActive = ()=>{
+    //     const toUpdate = realm
+    //   .objects(Users)
+    //   .filtered('active == $0', true);
+    // //   console.log('toUpdate' ,toUpdate)
+    //   if(toUpdate.length == 1){
+    //     realm.write(() => {
+    //         toUpdate[0].active = false;
+    //         });
+    //   }
+        
+    // }
+
+    // const setUser =  (data)=>{
+        // realm.write(() => {
+        //     realm.create(Users, {
+        //         _id: new BSON.ObjectId(),
+        //         name: data[0],
+        //         nickname : data[1],
+        //         email : data[2],
+        //         active : true,
+        //         passcode : ''
+        //     });
+        //   });
+    // }
+
+    // const getUser = ()=>{
+        
+    //     console.log(users);
+    // }
+        
+          
+
+        // console.log(useUserStore);
+    const handleSubmit = ()=>{
+        // setUserState();
+        setUser({name : data[0] , nickname : data[1] , email : data[2]})
+        console.log(name , nickname , email);
+        // getUser();
+        // console.log(user);
+        // findAndUpdateCurActive();
+        // setUser(data);
+        // getUser();
+        navigation.navigate('setPasscode')
+
+    }
 
     const handleInputs =  (index , changedData)=>{
         data[index] = changedData;
         setData(data);
-        console.log(data);
+    //     console.log(data);
     }
 
     const nameCheck = (name) =>{
         const regex = /[0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
+        // console.log(!regex.test(name));
         return !regex.test(name);
     }
 
     function isValidGmail(email) {
         const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-        return gmailRegex.test(email);
+        const isEmailValid = gmailRegex.test(email);
+        if(isEmailValid){
+            // console.log("z" , data[2]);
+            const existingUser = realm.objects(Users).filtered('email == $0' , data[2]);
+            // console.log("y" ,existingUser );
+            return existingUser.length === 0;
+        }
+        return false;
       }
 
-      const handleError = (err)=>{
-            setError((error)=>error && err);
-            console.log(error);
+      const handleError = (index ,err)=>{
+            if(index == 0)
+                setError1(err);
+            else if(index == 1)
+                setError2(err);
+            else
+                setError3(err);
+            // console.log(error);
       }
 
   return (
@@ -59,8 +137,7 @@ const CreateAccounts = ({navigation}) => {
                 <CheckBox setChecked={setChecked}/>
                 <Text>Tick this box to confirm that you are at least 18 years old and agree to our <Text style={checked && styles.TandC}> Terms & conditions</Text></Text>
             </View>
-                
-            <Button  style={styles.button} title="Continue" disabled={ !checked}/>
+            <Button onPress={handleSubmit}  style={styles.button} title="Continue" disabled={ !checked || error1 || error2 || error3}/>
 
 
         </View>
