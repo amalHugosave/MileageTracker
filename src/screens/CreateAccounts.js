@@ -113,7 +113,7 @@ const CreateAccounts = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-        <BackButton style={styles.image} dest ='signUp' navigation={navigation}/>
+        <BackButton style={styles.image} navigation={navigation}/>
 
         {/* <Pressable onPress={()=>navigation.navigate('signUp')}>
             <Image onPress={()=> navigation.navigate('signUp')} style={styles.image} source={require('../rcs/lArrow.png')} />

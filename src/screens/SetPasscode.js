@@ -19,7 +19,6 @@ const SetPasscode = ({navigation}) => {
     const state = useUserStore();
     const realm = useRealm();
     const users = useQuery(Users);
-
     // const deleteProfile = () => {
     //     const toDelete = realm
     //       .objects(Users)
@@ -55,6 +54,7 @@ const SetPasscode = ({navigation}) => {
         setPasscode(firstData);
         AddUserToRealm(0)
         getUser();
+        console.log('tabNavigation')
         navigation.navigate('tabNavigation')
 
     }
@@ -102,7 +102,7 @@ const SetPasscode = ({navigation}) => {
   return (
     <View style={styles.container}>
         <View style={styles.top}>
-            <BackButton navigation={navigation}  dest="createAccount" style={styles.image}/>
+            <BackButton navigation={navigation} style={styles.image}/>
             <View style={styles.body}>
                 <Text style={styles.heading}>
                     Set a Passcode

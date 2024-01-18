@@ -1,10 +1,10 @@
 import React from 'react'
 import { View  ,Image, StyleSheet, Pressable} from 'react-native'
 
-const HeaderWithBackbutton = () => {
+const HeaderWithBackbutton = ({handlePress}) => {
   return (
     <View>
-        <Pressable onPress={()=>console.log("y")} style={styles.backButtonContainer}></Pressable>
+        <Pressable onPress={handlePress} style={styles.backButtonContainer}></Pressable>
         <Image source={require('../rcs/headerwithbackbutton.png')} />
     </View>
   )

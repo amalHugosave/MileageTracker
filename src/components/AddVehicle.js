@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, View ,Text , Button , Image } from 'react-native'
-const AddVehicle = ({container}) => {
+const AddVehicle = ({container , handlePress}) => {
   return (
     <View style={container}>
             <Image source={require('../rcs/dummyVehicle.png')} />
             <Text style={styles.vehAdd}>Add vehicles to start tracking its fueling and performance</Text>
-            <Button title= "Add Vehicle"/>
+            <Button onPress={handlePress} title= "Add Vehicle"/>
     </View>
   )
 }

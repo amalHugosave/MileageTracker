@@ -9,17 +9,10 @@ const ProfilePage = ({navigation}) => {
 
     const {name , nickname } = useUserStore();
 
-    const realm = useRealm();
-    // const query = useQuery(Users);
-
-    // useEffect(()=>{
-    //     const getUserData = ()=>{
-    //         const ActiveUser = realm.objects(Users).filtered('active == $0' , true)[0];
-    //         setActiveUser(ActiveUser);
-    //         console.log(activeUser);
-    //     }
-    //     getUserData();
-    // } , [])
+    const    addVehicles = ()=>{
+        // console.log(navigation)
+        navigation.navigate('vehicles');
+    }
     
 
   return (
@@ -34,7 +27,7 @@ const ProfilePage = ({navigation}) => {
             
         </View>
         
-        <AddVehicle container={styles.bottom} />
+        <AddVehicle handlePress={addVehicles} container={styles.bottom} />
 
     </View>
   )

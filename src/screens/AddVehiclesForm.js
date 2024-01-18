@@ -2,10 +2,15 @@ import React from 'react'
 import { StyleSheet, View , Text , Image , TextInput , Button   } from 'react-native'
 import HeaderWithBackbutton from '../components/HeaderWithBackbutton'
 import RNPickerSelect from 'react-native-picker-select';
-const AddVehiclesForm = () => {
+const AddVehiclesForm = ({navigation}) => {
+
+const handlePress = ()=>{
+  navigation.navigate('vehicles');
+}
+
   return (
     <View style={styles.container}>
-        <HeaderWithBackbutton />
+        <HeaderWithBackbutton handlePress={handlePress} />
         <Text style={styles.heading}> Add Vehicles</Text>
         <Image source={require('../rcs/addPhoto.png')} />
         <View style={styles.inputContainer}>

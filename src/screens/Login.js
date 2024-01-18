@@ -5,6 +5,7 @@ import {Users} from '../Database/models/UsersSchema'
 import UserCard from '../components/UserCard';
 import useUserStore from '../state/Users';
 
+// import { useQuery } from '@realm/react';
 
 const sampleUser = require('../rcs/sampleUser.png');
 const addUser = require('../rcs/AddUser.png');
@@ -17,7 +18,7 @@ const Login = ({navigation}) => {
     }
 
     const goToCreateAccount = (data)=>{
-        navigation.navigate('CreateAccounts');  
+        navigation.navigate('createAccount');  
     }
 
   return (
