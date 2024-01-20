@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, View ,Text , Button , Image } from 'react-native'
-const AddVehicle = ({container , handlePress}) => {
+const AddVehicle = ({  handlePress}) => {
   return (
-    <View style={container}>
+    <View style={styles.container}>
             <Image source={require('../rcs/dummyVehicle.png')} />
             <Text style={styles.vehAdd}>Add vehicles to start tracking its fueling and performance</Text>
             <Button onPress={handlePress} title= "Add Vehicle"/>
@@ -15,7 +15,10 @@ const styles = StyleSheet.create({
         textAlign : 'center',
         fontSize : 15,
         marginTop : 5,
-        marginBottom : 5
+        marginBottom : 5,
+        color : '#0B3C58'
+    },container : {
+      alignItems : 'center'
     }
 })
 

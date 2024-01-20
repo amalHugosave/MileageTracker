@@ -1,15 +1,15 @@
 import React from 'react'
 import { Pressable ,Image} from 'react-native'
 
-const handlePress = (dest)=>{
-  if(dest)
-    navigation.navigate(dest);
-  else
-    navigation.goback();
-}
+// const handlePress = (dest , navigation)=>{
+//   if(dest)
+//     navigation.navigate(dest);
+//   else
+//     navigation.goback();
+// }
 const BackButton = ({navigation , dest , style}) => {
   return (
-    <Pressable onPress={handlePress}>
+    <Pressable onPress={() =>navigation.goBack()}>
         <Image  style={style} source={require('../rcs/lArrow.png')} />
     </Pressable>
   )

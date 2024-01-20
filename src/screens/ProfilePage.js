@@ -1,20 +1,33 @@
 import { useQuery, useRealm } from '@realm/react'
 import React, { useEffect, useState } from 'react'
-import { View ,Image, StyleSheet, StatusBar,Text ,Button } from 'react-native'
-import { Users } from '../Database/models/UsersSchema';
-import AddVehicle from '../components/AddVehicle';
+import { View ,Image, StyleSheet, StatusBar,Text ,Button } from 'react-native'  
 import useUserStore from '../state/Users';
+import { Vehicles } from '../Database/models/VehiclesSchema';
+import HomePageNoVehicles from '../components/HomePageNoVehicles';
+import HomePageWithVehicles from '../components/HomePageWithVehicles';
 
 const ProfilePage = ({navigation}) => {
+    const {name , nickname , id} = useUserStore();
+    const [userVehicles , setUserVehicles] = useState([]);
+    const AllVehicles = useQuery(Vehicles);
+    const realm = useRealm();
 
-    const {name , nickname } = useUserStore();
+    const getUserVehicles = ()=>{
+        const curUserVehicles = realm.objects(Vehicles).filtered('userId == $0' , id);
+        setUserVehicles(curUserVehicles);
+    }
+    useEffect(() =>{
+        getUserVehicles();
+    } ,[AllVehicles])
+
 
     const    addVehicles = ()=>{
-        // console.log(navigation)
-        navigation.navigate('vehicles');
+        navigation.navigate('vehicles',{screen : 'addVehiclesForm'});
     }
     
-
+    // console.log(userVehicles.length);
+    // console.log(AllVehicles[0].userId)
+    // console.log(id)
   return (
     <View style={styles.container}>
         <View style={styles.header}>
@@ -23,12 +36,20 @@ const ProfilePage = ({navigation}) => {
         </View>
         <View style={styles.medium}>
             <Text style={styles.greeting}>Hi {nickname || name}</Text>
-            <Text style={styles.welcome}>Track your miles towards a prosperous financial journey!</Text>
             
         </View>
-        
-        <AddVehicle handlePress={addVehicles} container={styles.bottom} />
+        {
+        userVehicles.length !== 0  ? (
+            <HomePageWithVehicles vehiclesData={userVehicles} navigation={navigation}/>
+            //     <View style={styles.bottom}>
+            //     <Text style={styles.welcome}>Track your miles towards a prosperous financial journey!</Text>    
+            //     <AddVehicle handlePress={addVehicles}  />
+            // </View>
+            ) :(
+                <HomePageNoVehicles handlePress={addVehicles}/>
 
+            )
+}
     </View>
   )
 }
@@ -49,15 +70,9 @@ const styles = StyleSheet.create({
 
     },medium :{
         alignItems : 'center',
-        marginTop : 50,
+        marginTop : 30,
         padding : 20
-    },welcome : {
-        fontSize : 17,
-        textAlign : 'center'
-    },bottom : {
-        alignItems : 'center',
-        marginTop : 20
-    }
+    },
 })
 
 export default ProfilePage

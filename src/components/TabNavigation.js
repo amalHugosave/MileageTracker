@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Text } from 'react-native';
 import { Image } from 'react-native-svg';
 import AddVehiclesForm from '../screens/AddVehiclesForm';
-import Vehicles from '../screens/Vehicles';
+import Vehicles from '../screens/VehiclesInfo';
 import VehiclesNav from '../navigators/VehiclesNav';
 // import Icon from 'react-native-ico-material-design';
 const Tab = createBottomTabNavigator();

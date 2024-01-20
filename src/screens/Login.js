@@ -13,7 +13,8 @@ const Login = ({navigation}) => {
     const users = useQuery(Users);
     const {setUser} = useUserStore()
     const goToHomePage = (data)=>{
-        setUser({name : data.name , nickname : data.nickname , email : data.email , passcode : data.passcode});
+        setUser({name : data.name , nickname : data.nickname , email : data.email , passcode : data.passcode , id : data._id});
+        // console.log(data._id)
         navigation.navigate('tabNavigation');
     }
 

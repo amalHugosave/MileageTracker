@@ -15,7 +15,7 @@ import {BSON} from 'realm';
 
 const SetPasscode = ({navigation}) => {
 
-    const {setPasscode ,passcode ,name , nickname , email} = useUserStore();
+    const {setPasscode ,passcode ,name , nickname , email,setId , id} = useUserStore();
     const state = useUserStore();
     const realm = useRealm();
     const users = useQuery(Users);
@@ -52,10 +52,17 @@ const SetPasscode = ({navigation}) => {
         // getActiveUserAndUpdtePasscode();
         // getUser();
         setPasscode(firstData);
-        AddUserToRealm(0)
+        AddUserToRealm(0);
+        setPasscodeAndIdToState();
         getUser();
-        console.log('tabNavigation')
+        console.log(id)
         navigation.navigate('tabNavigation')
+
+    }
+    const setPasscodeAndIdToState = ()=>{
+        const user = realm.objects(Users).filtered('email == $0' , email)[0];
+        
+        setId(user._id);
 
     }
     
