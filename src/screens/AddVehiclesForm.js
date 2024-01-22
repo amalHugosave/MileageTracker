@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { StyleSheet, View , Text , Image , TextInput , Button   } from 'react-native'
+import { StyleSheet, View , Text , Image , TextInput , Button ,Pressable  } from 'react-native'
 import HeaderWithBackbutton from '../components/HeaderWithBackbutton'
 import RNPickerSelect from 'react-native-picker-select';
 import { useRealm } from '@realm/react';
 import { BSON } from 'realm';
 import useUserStore from '../state/Users';
+import {launchImageLibrary} from 'react-native-image-picker';
 // import {RNFS} from 'react-native-fs';
-
+import {launchCamera} from 'react-native-image-picker';
 import { Vehicles } from '../Database/models/VehiclesSchema';
 var RNFS = require('react-native-fs');  
 
@@ -29,20 +30,20 @@ const sampleImages = [`iVBORw0KGgoAAAANSUhEUgAAAUQAAACUCAYAAADro1BdAAAACXBIWXMAA
   const [errors, setErrors] = useState({name : errorstext[0] , type : errorstext[1]})
   const realm = useRealm();
 
-  const convertImageToBase64 =  async() => {
-    const imgPath = data.image || `/src/rcs/${data.type}wheeler.png`;
-    // console.log(imgPath);
+  // const convertImageToBase64 =  async() => {
+  //   const imgPath = data.image || `/src/rcs/${data.type}wheeler.png`;
+  //   // console.log(imgPath);
     
-      try {
-        const imagePath = `/Users/amalshibu/Desktop/PROJ/MileageTracker/src/rcs/${data.type}wheeler.png`;
-        //  console.log(imagePath)
-        const base64String = await RNFS.readFile(imagePath, 'base64');
-        handleFieldChange('image' , base64String);
-        return base64String;
-      } catch (error) {
-        console.log('Error reading file:', error);
-      }
-  };
+  //     try {
+  //       const imagePath = `/Users/amalshibu/Desktop/PROJ/MileageTracker/src/rcs/${data.type}wheeler.png`;
+  //       //  console.log(imagePath)
+  //       const base64String = await RNFS.readFile(imagePath, 'base64');
+  //       handleFieldChange('image' , base64String);
+  //       return base64String;
+  //     } catch (error) {
+  //       console.log('Error reading file:', error);
+  //     }
+  // };
 
 const handlePress = ()=>{
   navigation.navigate('vehiclesInfo');
@@ -80,7 +81,7 @@ const handlePress = ()=>{
     // console.log(data);
     // console.log(sampleImages[data.type - 2])
     const image = data.image || sampleImages[data.type - 2];
-    // console.log(image)
+    // console.log("image" , image)
     realm.write(()=>{
       realm.create(Vehicles , {
         _id : new BSON.ObjectID(),
@@ -96,13 +97,45 @@ const handlePress = ()=>{
 
       navigation.navigate('vehiclesInfo')
   }
-  // console.log(data)
+
+
+
+  const openImagePicker = () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: true,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        let imageUri = response.uri || response.assets?.[0]?.uri;
+        console.log('image uri' , imageUri);
+        handleFieldChange('image' , imageUri);
+        // setSelectedImage(imageUri);
+      }
+    });
+  };
+
+  console.log(data.image)
   return (
     <View style={styles.container}>
       {/* <Text>{data.image}</Text> */}
         <HeaderWithBackbutton handlePress={handlePress} />
         <Text val={data.name}  style={styles.heading}> Add Vehicles</Text>
-        <Image source={require('../rcs/addPhoto.png')} />
+        <Pressable style={styles.pressableressable} onPress={openImagePicker}>
+          <Image style={styles.image} source={data.image ?{ uri: data.image } : require('../rcs/addPhoto.png')} />
+        </Pressable>
+        {/* <Image
+            source={}
+            style={styles.image}
+            resizeMode="contain"
+          /> */}
         <View style={styles.inputContainer}>
             <TextInput  onChangeText={(text)=>handleFieldChange('name' , text)} style={styles.input} placeholder='Vehicle Name'/>
             {errors.name && <Text style={styles.error}>{errors.name}</Text>}
@@ -173,6 +206,13 @@ const styles = StyleSheet.create({
     },error : {
       color : 'crimson',
       marginTop : 7
+    },pressable : {
+      // backgroundColor : 'yellow',
+      // width : 500
+    },image :{
+      width : 100,
+      height : 100,
+      borderRadius : 50
     }
 })
 

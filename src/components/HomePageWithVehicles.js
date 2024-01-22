@@ -12,16 +12,17 @@ import useVehicleStore from '../state/Vehicles';
 const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
     const AllVehicles = useQuery(Vehicles)
     const [vehicleSelectData , setvehicleSelectData] = useState([]);
-    const {setVehicle  ,image ,id ,name ,  getState} = useVehicleStore();
+    const {setVehicle  ,image ,vehId ,name ,  getState} = useVehicleStore();
+    // const {vehId} = use/
     // const { , }  = useVehicleStore();
-    // console.log(id);
+    console.log(vehId);
     const getSelectData = ()=>{
         let selectData = [];
         // let i = 0;
         vehiclesData.map((vehicleData) =>{
             
             selectData.push({label : vehicleData.name , value : vehicleData._id});
-            if(vehicleData._id.equals(id)){
+            if(vehicleData._id.equals(vehId)){
                 const t = selectData[0];
                 selectData[0] = selectData[selectData.length - 1];
                 selectData[selectData.length - 1] = t;
@@ -29,8 +30,8 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
             }
             // i++;
         })
-        if(id == ''){
-            setVehicle({name : vehiclesData[0].name , engine : vehiclesData[0].engine , id : vehiclesData[0]._id , userId : vehiclesData[0].userId , type : vehiclesData[0].type , image : vehiclesData[0].image});
+        if(vehId == ''){
+            setVehicle({name : vehiclesData[0].name , engine : vehiclesData[0].engine , vehId : vehiclesData[0]._id , userId : vehiclesData[0].userId , type : vehiclesData[0].type , image : vehiclesData[0].image});
         }
         setvehicleSelectData(selectData);
     }
@@ -42,30 +43,21 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
     
 
     const handleSelectChange = (value)=>{
-        // if(value > 0){
-        //     let obj = vehiclesData[value];
 
-        // }else {
-
-        // }
-        // console.log(value)
-            // console.log("id" ,id , "name",name);
-            // console.log("value" , value)
         let obj = {}
         vehiclesData.map((vehicleData) => {
             
             if(vehicleData._id.equals(value) ){
                 obj= vehicleData;
-                // console.log("yes");
             }
         });
-        setVehicle({name : obj.name , engine : obj.engine , id : obj._id , userId : obj.userId , type : obj.type , image : obj.image});
+        setVehicle({name : obj.name , engine : obj.engine , vehId : obj._id , userId : obj.userId , type : obj.type , image : obj.image});
 
-        console.log(obj)
+        // console.log(obj)
     }
 
     const handlePressForAddFuel = ()=>{
-        navigation.navigate('')
+        navigation.navigate('refuelingNav' , {screen : 'refuelingForm'})
     }
     // console.log("x" ,vehiclesData[1].image);
   return (
@@ -78,9 +70,9 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
             onValueChange={(value) => handleSelectChange(value)}
             items={vehicleSelectData}
         />
-        <Image style={styles.image} source={{ uri: `data:image/png;base64,${image}` }}/>
+        <Image style={styles.image} source={image.length > 300 ? { uri: `data:image/png;base64,${image}` } : {uri :image}}/>
         
-        <AddRefuelingData />
+        <AddRefuelingData handlePress={handlePressForAddFuel} />
     </View>
   )
 }

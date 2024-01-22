@@ -7,6 +7,7 @@ import { Image } from 'react-native-svg';
 import AddVehiclesForm from '../screens/AddVehiclesForm';
 import Vehicles from '../screens/VehiclesInfo';
 import VehiclesNav from '../navigators/VehiclesNav';
+import RefuelingNav from '../navigators/RefuelingNav';
 // import Icon from 'react-native-ico-material-design';
 const Tab = createBottomTabNavigator();
 const myIcon = <Icon name="rocket" size={30} color="#900" />;
@@ -18,7 +19,9 @@ const TabNavigation = () => {
           tabBarInactiveTintColor: 'gray',
         })}>
             <Tab.Screen  name="Home" component={ProfilePage}  options={{headerShown : false}}/>
+            <Tab.Screen name="refuelingNav" component={RefuelingNav} options={{headerShown : false}}/>
             <Tab.Screen name="vehicles" component={VehiclesNav} options={{headerShown : false}}/>
+            
          </Tab.Navigator>
   )
 }

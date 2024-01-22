@@ -11,7 +11,7 @@ const VehicleCard = ({data}) => {
   // console.log("vehicle Card" , data.i3mage);
   return (
     <View style={styles.container}>
-        <Image style={styles.image} source={{ uri: `data:image/png;base64,${data.image}` }}/>
+        <Image style={styles.image} source={data.image.length > 300 ? { uri: `data:image/png;base64,${data.image}` } : {uri :data.image}}/>
         <View style={styles.textContainer}>
             <View style={styles.leftText}>
                 <Text style={styles.leftTopText}>{data.name}</Text>

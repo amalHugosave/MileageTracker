@@ -5,8 +5,8 @@ const useVehicleStore = create((set) => ({
     type : 0,
     image : '',
     engine : '',
-    id : '',
-    useId : '',
+    vehId : '',
+    userId : '',
     setVehicle : (newState) => {
         // console.log("y");
         set((state) => (newState))

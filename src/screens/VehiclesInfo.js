@@ -4,6 +4,7 @@ import VehicleCard from '../components/VehicleCard'
 import { useQuery, useRealm } from '@realm/react'
 import { Vehicles } from '../Database/models/VehiclesSchema'
 import useUserStore from '../state/Users'
+import AddVehicle from '../components/AddVehicle'
 
 
 const VehiclesInfo = ({navigation}) => {
@@ -21,11 +22,15 @@ const VehiclesInfo = ({navigation}) => {
       
     }
     getVehcles();
-  } ,[vehiclesInRealm])
+  } ,[vehiclesInRealm ])
 
   // console.log("y")
   
   const handlePress = ()=>{
+    navigation.navigate('addVehiclesForm')
+  }
+
+  const navigateToForm = ()=>{
     navigation.navigate('addVehiclesForm')
   }
 
@@ -34,17 +39,26 @@ const VehiclesInfo = ({navigation}) => {
     <View style={styles.container}>
       {/* {console.log("z")} */}
         <Text style={styles.heading}>Vehicles</Text>
-        { 
-          // vehcles.length > 0 &&
-          <ScrollView style={styles.cardContainer}>
-          {
-              vehcles.map((vehicle)=><VehicleCard key={vehicle._id} data={vehicle}/>)
+        
+        {
+          vehcles.length === 0 ?
+          (
+            <View style={styles.addvehicleContainer}>
+              <AddVehicle handlePress={navigateToForm}/> 
+            </View >
+              ):(
+            <ScrollView style={styles.cardContainer}>
+            {
+                vehcles.map((vehicle)=><VehicleCard key={vehicle._id} data={vehicle}/>)
+            }
+            </ScrollView>
+           )
           }
-          </ScrollView>
-        }
-        <Pressable onPress={handlePress} style ={styles.button}>
-          <Image source={require('../rcs/AddUser.png')} />
-        </Pressable>
+          <Pressable onPress={handlePress} style ={styles.button}>
+            <Image source={require('../rcs/AddUser.png')} />
+          </Pressable>
+        
+        
     </View>
   )
 }
@@ -75,6 +89,11 @@ const styles = StyleSheet.create({
       // flex : 0.1,
       // width : 60,
       // backgroundColor : 'red'
+  },addvehicleContainer :{
+     flex : 1,
+     justifyContent : 'center',
+     padding : 30,
+     backgroundColor : 'red'
   }
 })
 

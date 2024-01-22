@@ -1,6 +1,6 @@
 import { useQuery, useRealm } from '@realm/react'
 import React, { useEffect, useState } from 'react'
-import { View ,Image, StyleSheet, StatusBar,Text ,Button } from 'react-native'  
+import { View ,Image, StyleSheet, StatusBar,Text ,Button , ScrollView } from 'react-native'  
 import useUserStore from '../state/Users';
 import { Vehicles } from '../Database/models/VehiclesSchema';
 import HomePageNoVehicles from '../components/HomePageNoVehicles';
@@ -29,7 +29,7 @@ const ProfilePage = ({navigation}) => {
     // console.log(AllVehicles[0].userId)
     // console.log(id)
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
         <View style={styles.header}>
             <Image source={require('../rcs/dummyProfile.png')}/>
             <Image style={styles.image2} source={require('../rcs/logo2.png')}/>
@@ -50,7 +50,7 @@ const ProfilePage = ({navigation}) => {
 
             )
 }
-    </View>
+    </ScrollView>
   )
 }
 const styles = StyleSheet.create({
