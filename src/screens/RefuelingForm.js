@@ -10,16 +10,20 @@ import { useQuery, useRealm } from '@realm/react'
 import{ useEffect, useState } from 'react'
 import DatePicker from 'react-native-date-picker'
 import moment from 'moment';
-const RefuelingForm = ({navigation}) => {
+import { Refueling } from '../Database/models/RefuelingSchema';
+import { BSON } from 'realm';
+const RefuelingForm = ({navigation , route}) => {
     const realm = useRealm();
     const {id} = useUserStore();
     const {vehId} = useVehicleStore();
     const [userVehicles , setUserVehicles] = useState([]);
     const AllVehicles = useQuery(Vehicles);
     const [data , setData] = useState({vehId ,  odometerStart :null , odometerEnd : null , fuelConsumed : null , price : null});
-    const [date , setDate] = useState({})
-    const [open, setOpen] = useState(false)
-    const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+    const [date , setDate] = useState('')
+    const [open, setOpen] = useState(false);
+    const refuelingData = useQuery(Refueling);
+    // const {screenType} = route?.params;
+    // console.log(screenType);
     useEffect(()=>{
         getUserVehicles();
     },[vehId , AllVehicles]);
@@ -63,10 +67,32 @@ const RefuelingForm = ({navigation}) => {
     }
 
     const getFuelData = (value)=>{
-        setData({...data , fuelConsumed : parseFloat(value[0])});
-        setData({...data , price : parseFloat(value[1])});
+        setData((curdate)=>{
+            return {...curdate , fuelConsumed : parseFloat(value[0])}
+        });
+        setData((curdate)=>{
+            return {...curdate , price : parseFloat(value[1])}
+        });
     }
-    console.log(data);
+
+    const handleSubmit = ()=>{
+        realm.write(()=>{
+            realm.create(Refueling , {
+                _id : new BSON.ObjectId(),
+                ...data ,
+                date,
+                userId : id,
+                curDate : new Date()
+            })
+        })
+
+        navigation.navigate('refuelingInfo')
+    }
+
+    console.log(refuelingData);
+    // console.log(date);
+
+
   return (
     <View style={styles.container}>
         <View style={styles.top}>
@@ -107,8 +133,8 @@ const RefuelingForm = ({navigation}) => {
         </View>
 
         <View style={styles.bottom}>
-            <Button title="Cancel" />
-            <Button color="#0B3C58" title="Add" />
+            <Button onPress={()=>navigation.navigate('refuelingInfo')} title="Cancel" />
+            <Button onPress={handleSubmit} disabled={!date || !data.odometerStart || !data.odometerEnd || !data.price || !data.fuelConsumed || data.odometerStart >= data.odometerEnd} color="#0B3C58" title="Add" />
 
         </View>
     </View>
@@ -138,8 +164,12 @@ const styles = StyleSheet.create({
     },
     bottom :{
         // flex : 0.1,
+        position : 'absolute',
+        bottom : 40,
+        backgroundColor : 'yellow',
         flexDirection : 'row',
-        alignItems : 'cneter'
+        alignItems : 'cneter',
+        // left : 0
     }
 })
 

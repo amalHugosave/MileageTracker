@@ -19,7 +19,7 @@ const TabNavigation = () => {
           tabBarInactiveTintColor: 'gray',
         })}>
             <Tab.Screen  name="Home" component={ProfilePage}  options={{headerShown : false}}/>
-            <Tab.Screen name="refuelingNav" component={RefuelingNav} options={{headerShown : false}}/>
+            <Tab.Screen name="Refueling" component={RefuelingNav} options={{headerShown : false}}/>
             <Tab.Screen name="vehicles" component={VehiclesNav} options={{headerShown : false}}/>
             
          </Tab.Navigator>

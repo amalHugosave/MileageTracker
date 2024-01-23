@@ -1,24 +1,31 @@
 import { useQuery, useRealm } from '@realm/react';
 import React, { useEffect } from 'react'
-import { View  ,Text, StyleSheet , Image ,Pressable} from 'react-native'
+import { View  ,Text, StyleSheet , Image ,Pressable ,Dimensions} from 'react-native'
 import { Vehicles } from '../Database/models/VehiclesSchema';
 import useUserStore from '../state/Users';
 import { useState } from 'react';
 import AddVehicle from '../components/AddVehicle';
 import RNPickerSelect from 'react-native-picker-select';
 import useVehicleStore from '../state/Vehicles';
+import { Refueling } from '../Database/models/RefuelingSchema';
+import RefuelingBox from '../components/RefuelingBox';
 const RefuelingInfo = ({navigation}) => {
     const realm = useRealm();
     const {id} = useUserStore();
     const {vehId , name ,setVehicle} = useVehicleStore();
     const [userVehicles , setUservehicles] = useState([]);
     const allVehicles = useQuery(Vehicles);
-    // console.log(veh)
+    const [vehRefuelingData , setVehRefuelingData] = useState([]);
+    const allRefuelingData = useQuery(Refueling);
     useEffect(()=>{
         getvehiclesOfUser();
-    } , [allVehicles , vehId])
+        getRefuelingDataOfVeh();
+    } , [allVehicles , vehId ,allRefuelingData])
 
-    // console.log("vehId" ,vehId ,"vehName", name  )
+    const getRefuelingDataOfVeh = ()=>{
+        const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId);
+        setVehRefuelingData(curRefuelingData);
+    }
     const getvehiclesOfUser = ()=>{
         // console.log("useEffect");
         const curVehiclesOfUser = realm.objects(Vehicles).filtered('userId == $0' , id);
@@ -47,9 +54,9 @@ const RefuelingInfo = ({navigation}) => {
     }
 
     const navigateToRefuelingForm = ()=>{
-        navigation.navigate('refuelingForm')
+        navigation.navigate('refuelingForm');
     }
-
+    console.log(vehRefuelingData)
   return (
     <View style={styles.container}>
         <View style={styles.headingContainer}>
@@ -71,14 +78,18 @@ const RefuelingInfo = ({navigation}) => {
                 <View style={styles.addVehicle}>
                     <AddVehicle handlePress={navigateToVehicleForm}/>
                 </View>
-            ):(
+            ):vehRefuelingData.length == 0 ?(
+        
                 <View style={styles.noFuelContainer}>
                     <Image source={require('../rcs/clouds.png')}/>
                     <Text style={styles.noFuelHeading}>No refuelling records yet!</Text>
                     <Text style={styles.noFuelSub}>Add a record using the + button below to begin your wealthcare journey</Text>
-                </View>    
-
+                </View> 
+            ): (<View style = {styles.refuelingDatas}>
+                    <RefuelingBox navigation={navigation} data={vehRefuelingData}/>
+                </View>
             )
+                
         }
         <Pressable onPress={navigateToRefuelingForm} style ={styles.button}>
             <Image style={styles.image} source={require('../rcs/AddUser.png')} />
@@ -92,18 +103,20 @@ const RefuelingInfo = ({navigation}) => {
 const styles = StyleSheet.create({
     container : {
         flex : 1,
-        backgroundColor : '#F0F2F2'
+        backgroundColor : '#F0F2F2',
+        alignItems : 'center'
     },
     headingContainer : {
         borderBottomColor :' gray',
         borderBottomWidth :0.5,
-        alignItems : 'center'
+        alignItems : 'center',
+        width : Dimensions.get('window').width
     },
     heading : {
         textAlign : 'center',
         paddingVertical : 10,
         fontSize : 30,
-        color : 'black',
+        color : '#0B3C58',
         
     },
     addVehicle :{
@@ -125,16 +138,21 @@ const styles = StyleSheet.create({
         textAlign : 'center',
         fontSize :15
     },button : {
-        alignItems : 'flex-end'
+        alignItems : 'flex-end',
+        position : 'absolute',
+        bottom : 0,
+        right : 0
     },image : {
         // backgroundColor : 'red'
+    },refuelingDatas : {
+
     }
 })
 
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-        marginLeft : 35,
+        marginLeft : 45,
         marginVertical : 10,
 
       fontSize: 16,
@@ -149,7 +167,7 @@ const pickerSelectStyles = StyleSheet.create({
       paddingRight: 30, // to ensure the text is never behind the icon
     },
     inputAndroid: {
-        marginLeft : 35,
+        marginLeft : 45, 
        marginVertical : 10,
       fontSize: 16,
       paddingHorizontal: 10,

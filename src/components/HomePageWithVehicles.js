@@ -57,7 +57,7 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
     }
 
     const handlePressForAddFuel = ()=>{
-        navigation.navigate('refuelingNav' , {screen : 'refuelingForm'})
+        navigation.navigate('Refueling' , {screen : 'refuelingForm'})
     }
     // console.log("x" ,vehiclesData[1].image);
   return (
