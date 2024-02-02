@@ -3,16 +3,16 @@ import { View  , StyleSheet, TextInput, Text  } from 'react-native'
 import PasscodeIput from './PasscodeInput';
 
 const passcode = ['' , '' ,'' ,''];
-const PasscodeEntry = ({getData,heading , subtitle ,isfocused}) => {
+const PasscodeEntry = ({getData,heading , subtitle ,isfocused, handleFullFill}) => {
 // console.log(getData);
 
 
 
   return (
     <View style={styles.container} >
-            <Text style={styles.passHeading}>{heading}<Text style = {styles.star}>*</Text></Text>
+            <Text style={styles.passHeading}>{heading} <Text style = {styles.star}>*</Text></Text>
             {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-                <PasscodeIput isfocused={isfocused} getData={getData}/>
+                <PasscodeIput  isfocused={isfocused} getData={getData} handleFullFill={handleFullFill}/>
     </View>
   )
 }
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     },
  passHeading : {
         fontSize : 20,
-        color : 'black',
+        color : '#0B3C58',
         marginBottom : 5
     },star :{
         color : 'crimson'
@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
         flexDirection : 'row',
         justifyContent : 'space-around'
     },subtitle : {
-        marginBottom : 10
+        marginBottom : 10,
+        color : '#6D8A9B'
     }
 })
 

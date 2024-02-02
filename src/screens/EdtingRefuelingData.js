@@ -1,40 +1,61 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View ,Text ,Image ,Button, Dimensions , Pressable} from 'react-native'
 import BackButton from '../components/BackButton'
 import useVehicleStore from '../state/Vehicles'
 import moment from 'moment'
 import TwoTexts from '../components/TwoTexts'
 import { useRealm } from '@realm/react'
+import ModalContainer from '../components/ModalContainer'
 import { Refueling } from '../Database/models/RefuelingSchema'
+import HollowButton from '../components/Buttons/HollowButton'
+import useRefuelTriggerStore from '../state/RefuelTrigger'
 const dayNames = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 const EdtingRefuelingData = ({route , navigation}) => {
+    console.log("route" ,route.params);
     const {data} = route.params
+    const {removeRefuelData} = useRefuelTriggerStore();
     const {date , fuelConsumed , odometerStart , odometerEnd , price , curDate, _id} = data;
+
     const day = dayNames[date.getDay()];
     const {name} = useVehicleStore();
     const realm = useRealm();
+    const [modalVisible , setModalVisible] = useState(false);
     const handleDelete = ()=>{
+        setModalVisible(true);
+        
+    }
+    const handleAccept = ()=>{
+        removeRefuelData(_id);
+
         const toDelete = realm.objects(Refueling).filtered('_id == $0' , _id);
 
         realm.write(()=>{
             realm.delete(toDelete);
         });
+        
         navigation.navigate('refuelingInfo');
     }
 
+    const handleReject = ()=>{
+        setModalVisible(false);
+    }
+
+    
     const handleEdit = ()=>{
-        navigation.navigate('refuelingForm' , {screenType : 1});
+        navigation.navigate('editingRefuelingForm' , {info : data});
     }
 
   return (
     <View style={styles.container}>
+        <ModalContainer modalVisible={modalVisible} modaltext="Are you sure you want to delete this refueling record" handleAccept={handleAccept} handleReject={handleReject}/>
         <View style={styles.top}>
             <View style={styles.toptop}>
-                <BackButton navigation={navigation} />
+                <BackButton handlePress={()=>navigation.navigate('refuelingInfo')} navigation={navigation} />
                 <Text style={[styles.text ,styles.textTop]}>{day}, {moment(date).format('D MMM \'YY')}</Text>
                 <Pressable onPress={handleDelete}>
                     <Image source={require('../rcs/deleteRefueling.png')}/>
                 </Pressable>
+                
             </View>
             
             <Text style={[styles.text , styles.textMid]}>{name}</Text>
@@ -51,7 +72,7 @@ const EdtingRefuelingData = ({route , navigation}) => {
             </View>
         </View>
         <View style={styles.bottom}>
-            <Button onPress={handleEdit} title='Edit'/>
+            <HollowButton text="Edit" handlePress={handleEdit} parentStyles={styles.buttonWidth}/>
         </View>
     </View>
   )
@@ -97,7 +118,10 @@ const styles = StyleSheet.create({
     },bottom :{
         position : 'absolute',
         bottom : 20,
-        alignItems : 'center'
+        alignItems : 'center',
+        width : "100%"
+    },buttonWidth :{
+        width : "80%"
     }
 })
 

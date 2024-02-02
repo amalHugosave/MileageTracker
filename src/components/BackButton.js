@@ -7,9 +7,9 @@ import { Pressable ,Image} from 'react-native'
 //   else
 //     navigation.goback();
 // }
-const BackButton = ({navigation , dest , style}) => {
+const BackButton = ({handlePress ,navigation , dest , style}) => {
   return (
-    <Pressable onPress={() =>navigation.goBack()}>
+    <Pressable onPress={handlePress ? handlePress : () =>navigation.goBack()}>
         <Image  style={style} source={require('../rcs/lArrow.png')} />
     </Pressable>
   )

@@ -4,25 +4,40 @@ import {useRealm , useQuery} from '@realm/react';
 import {Users} from '../Database/models/UsersSchema'
 import UserCard from '../components/UserCard';
 import useUserStore from '../state/Users';
-
+import LinearGradient from 'react-native-linear-gradient';
+import { Vehicles } from '../Database/models/VehiclesSchema';
+import useVehicleArrayStore from '../state/VehiclesArray';
 // import { useQuery } from '@realm/react';
 
 const sampleUser = require('../rcs/sampleUser.png');
 const addUser = require('../rcs/AddUser.png');
 const Login = ({navigation}) => {
+    const realm = useRealm();
     const users = useQuery(Users);
     const {setUser} = useUserStore()
+    const {addVehicle} = useVehicleArrayStore();
+
     const goToHomePage = (data)=>{
-        setUser({name : data.name , nickname : data.nickname , email : data.email , passcode : data.passcode , id : data._id});
-        // console.log(data._id)
-        navigation.navigate('tabNavigation');
+        if(data.passcode)
+            navigation.navigate('checkPasscodeContainer' ,{user :data})
+        else{
+            setUser({name : data.name , id : data._id , nickname : data.nickname , passcode : data.passcode , email : data.email});
+            realm.write(()=>{
+                toUpdate = realm.objects(Users).filtered('_id == $0' , data._id)[0];
+                toUpdate.active = true;
+            })
+            navigation.navigate('tabNavigation');
+            
+            const vehicles = realm.objects(Vehicles).filtered('userId == $0' , data._id);
+            addVehicle(vehicles);
+        }
     }
 
     const goToCreateAccount = (data)=>{
         navigation.navigate('createAccount');  
     }
-
   return (
+    <LinearGradient style={{flex : 1}}  colors={['#C5E3DC', '#F6F6EC']} >
         <View style={styles.container}>
             <View style={styles.top}>
                 <Image source={require('../rcs/logo.png')} />
@@ -33,7 +48,7 @@ const Login = ({navigation}) => {
 
                     <View style={styles.userContainer}>
                         {
-                            users.map((user)=>(<UserCard image ={sampleUser} data={user} handlePress={goToHomePage} />))
+                            users.map((user , index)=>(<UserCard key={index} image ={sampleUser} data={user} handlePress={goToHomePage} />))
                         }
                             <UserCard image={addUser} data={{name : 'Add User'}} handlePress={goToCreateAccount}/>  
 
@@ -43,13 +58,14 @@ const Login = ({navigation}) => {
 
             </View>
         </View>
+        </LinearGradient>
   )
 }
 
 
 const styles = StyleSheet.create({
     container : {
-        backgroundColor :  '#D0EAEA',
+        // backgroundColor :  '#D0EAEA',
         flex : 1
     },top : {
         marginTop : 25,

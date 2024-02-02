@@ -14,42 +14,20 @@ import { Refueling } from '../Database/models/RefuelingSchema';
 import { BSON } from 'realm';
 import DoubleButton from '../components/Buttons/DoubleButton';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
-const RefuelingForm = ({navigation }) => {
-    const {addRefuelData} = useRefuelTriggerStore();
+const RefuelingForm = ({navigation , route}) => {
     const realm = useRealm();
     const {id} = useUserStore();
     const {vehId} = useVehicleStore();
-    const [curVehid , setCurVehId] = useState(vehId);
-    const [userVehicles , setUserVehicles] = useState([]);
-    const AllVehicles = useQuery(Vehicles);
-    const [data , setData] = useState({  odometerStart :null , odometerEnd : null , fuelConsumed : null , price : null});
-    const [date , setDate] = useState('')
+    const {info} = route.params
+    const [data , setData] = useState({  odometerStart :info.odometerStart , odometerEnd : info.odometerEnd , fuelConsumed : info.fuelConsumed , price : info.price});
+    const [date , setDate] = useState(info.date)
     const [open, setOpen] = useState(false);
-    const refuelingData = useQuery(Refueling);
-    
-    useEffect(()=>{
-        getUserVehicles();
-    },[vehId , AllVehicles ]);
+    const {editingRefuelData} = useRefuelTriggerStore();
+    // console.log(info);
 
-    const getUserVehicles = ()=>{
-        const curVehiclesOfUser = realm.objects(Vehicles).filtered('userId == $0' , id);
-        let arr = [];
-        curVehiclesOfUser.map((veh)=>{
-            arr.push({label : veh.name , value : veh._id});
-            if(veh._id.equals(vehId)){
-                arr[arr.length - 1] = arr[0];
-                arr[0] = {label : veh.name , value : veh._id};
-            }
-            
-        })
-        setUserVehicles(arr);
-    }
 
     const handleData = (type , payload)=>{
-        if(type === 'vehicle'){
-            setData({...data , vehId : payload});
-        }else if(type == 'date'){
-            console.log(typeof(payload))
+        if(type == 'date'){
             setDate(payload);
         }
     }
@@ -66,7 +44,6 @@ const RefuelingForm = ({navigation }) => {
         setData((curdata)=> {
             return {...curdata , odometerEnd : parseInt(value[1])}
         });
-        console.log(parseInt(value[0]));
     }
 
     const getFuelData = (value)=>{
@@ -79,46 +56,32 @@ const RefuelingForm = ({navigation }) => {
     }
 
     const handleSubmit = ()=>{
-        const newId = new BSON.ObjectId()
-        const curDate = new Date();
+        const newDate = new Date();
+        editingRefuelData({...info , ...data , curdate : newDate , date : date})
+        // console.log(info);
+        const toUpdate = realm.objects(Refueling).filtered('_id == $0' , info._id)[0];
         realm.write(()=>{
-            realm.create(Refueling , {
-                _id : newId,
-                ...data ,
-                date,
-                userId : id,
-                curDate : curDate,
-                vehId : curVehid
-            })
+            toUpdate.date = date,
+            toUpdate.odometerStart = data.odometerStart
+            toUpdate.odometerEnd = data.odometerEnd
+            toUpdate.price = data.price
+            toUpdate.fuelConsumed = data.fuelConsumed
+            toUpdate.curdate = new Date();
         })
-        addRefuelData({_id : newId,
-        ...data ,
-        date,
-        userId : id,
-        vehId : curVehid,
-        curDate : curDate})
-        navigation.navigate('refuelingInfo');
-        }
 
-    // console.log(date);
+        navigation.navigate('refuelingInfo');
+    }
 
 
   return (
     <View style={styles.container}>
         <View style={styles.top}>
             <HeaderWithBackbutton handlePress={navigateToRefueling}/>
-            <Text style={styles.heading}>Add Refuelling Record</Text>
+            <Text style={styles.heading}>Edit Refuelling Record</Text>
         </View>
         
 
         <View style={styles.middle}>
-            <RNPickerSelect
-                style={{...pickerSelectStyles}}
-                placeholder={{}}
-                onValueChange={(value) => {setCurVehId(value)}}
-                items={userVehicles}
-            />
-            
             <Pressable onPress={()=>setOpen(true)} style={styles.input}>
                 <Text>{date ? moment(date).format('DD/MM/YYYY') : 'Refueling Date'}</Text>
             </Pressable>
@@ -135,26 +98,25 @@ const RefuelingForm = ({navigation }) => {
                     setOpen(false)
                 }}
             />
-            <TextWith2Inputs getData={getOdometerData} heading = "Odometer" inp1='Start reading'  inp2 ='End reading'/>
-            <TextWith2Inputs getData={getFuelData} heading = "Fuel" inp1='Consumed (in L)'  inp2 ='Price (in S$)'/>
+            <TextWith2Inputs values={[data.odometerStart , data.odometerEnd]} getData={getOdometerData} heading = "Odometer" inp1='Start reading'  inp2 ='End reading'/>
+            <TextWith2Inputs values={[data.fuelConsumed , data.price]} getData={getFuelData} heading = "Fuel" inp1='Consumed (in L)'  inp2 ='Price (in S$)'/>
 
             {/* <InputWithText /> */}
 
         </View>
 
         <View style={styles.bottom}>
-            <DoubleButton textHollow ="Cancel" handlehollowPress={()=>navigation.navigate('refuelingInfo')} handleSolidPress={handleSubmit}
+        <DoubleButton textHollow ="Cancel" handlehollowPress={()=>navigation.goBack()} handleSolidPress={handleSubmit}
               solidDisabled = {!date || !data.odometerStart || !data.odometerEnd || !data.price || !data.fuelConsumed || data.odometerStart >= data.odometerEnd}
-            textSolid='Add'
+            textSolid='Edit'
           />
-            {/* <Button onPress={()=>navigation.navigate('refuelingInfo')} title="Cancel" />
-            <Button onPress={handleSubmit} disabled={!date || !data.odometerStart || !data.odometerEnd || !data.price || !data.fuelConsumed || data.odometerStart >= data.odometerEnd} color="#0B3C58" title="Add" /> */}
+            {/* <Button onPress={()=>navigation.goBack()} title="Cancel" />
+            <Button onPress={handleSubmit} disabled={!date || !data.odometerStart || !data.odometerEnd || !data.price || !data.fuelConsumed || data.odometerStart >= data.odometerEnd} color="#0B3C58" title="Edit" /> */}
 
         </View>
     </View>
   )
 }
-
 
 const styles = StyleSheet.create({
     container : {
@@ -169,8 +131,7 @@ const styles = StyleSheet.create({
         color : 'black'
     },middle :{
         alignItems : 'center',
-        flex : 0.75,
-        marginBottom : 120
+        flex : 0.75
     },input : {
         width : 300,
         backgroundColor: 'white',
@@ -180,9 +141,10 @@ const styles = StyleSheet.create({
     },
     bottom :{
         // flex : 0.1,
-        // position : 'absolute',
-        // bottom : 40,
-        alignItems : 'center',
+        position : 'absolute',
+        bottom : 40,
+        flexDirection : 'row',
+        alignItems : 'cneter',
         // left : 0
     }
 })

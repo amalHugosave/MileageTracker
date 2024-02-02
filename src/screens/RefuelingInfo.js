@@ -9,6 +9,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import useVehicleStore from '../state/Vehicles';
 import { Refueling } from '../Database/models/RefuelingSchema';
 import RefuelingBox from '../components/RefuelingBox';
+import useRefuelTriggerStore from '../state/RefuelTrigger';
 const RefuelingInfo = ({navigation}) => {
     const realm = useRealm();
     const {id} = useUserStore();
@@ -16,31 +17,42 @@ const RefuelingInfo = ({navigation}) => {
     const [userVehicles , setUservehicles] = useState([]);
     const allVehicles = useQuery(Vehicles);
     const [vehRefuelingData , setVehRefuelingData] = useState([]);
-    const allRefuelingData = useQuery(Refueling);
+    const {refuelDatas , setRefuelState ,curVehId} = useRefuelTriggerStore();
+    // console.log(refuelDatas , "refuelDatas")
     useEffect(()=>{
         getvehiclesOfUser();
         getRefuelingDataOfVeh();
-    } , [allVehicles , vehId ,allRefuelingData])
+    } , [allVehicles , vehId, id ])
 
     const getRefuelingDataOfVeh = ()=>{
-        const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId);
-        setVehRefuelingData(curRefuelingData);
+        // console.log(curVehId , "curVehId");
+        if(vehId && !curVehId.equals(vehId))
+        {
+            const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId).sorted('date' , true);
+            // console.log(curRefuelingData , "curRefuelingdata");
+            setRefuelState({curVehId : vehId , refuelDatas : [...curRefuelingData]});
+        }
     }
     const getvehiclesOfUser = ()=>{
-        // console.log("useEffect");
         const curVehiclesOfUser = realm.objects(Vehicles).filtered('userId == $0' , id);
         let arr = [];
         curVehiclesOfUser.map((veh)=>{
             arr.push({label : veh.name , value : veh._id})
-            // console.log("veh._id" ,veh._id , "vehId" , vehId )
-            if(veh._id.equals(vehId)){
+
+            if(vehId && veh._id.equals(vehId)){
     
                 const t = arr[0];
                 arr[0] = arr[arr.length - 1];
                 arr[arr.length - 1] = t;
             }
         })
+
+        if(curVehiclesOfUser.length > 0 && !vehId){
+            setVehicle({name : curVehiclesOfUser[0].name , type : curVehiclesOfUser[0].type , engine : curVehiclesOfUser[0].engine , userId : curVehiclesOfUser[0].userId , vehId : curVehiclesOfUser[0]._id , image : curVehiclesOfUser[0].image});
+        }
         setUservehicles(arr);
+
+
     }
 
     const handleSelectChange = (value)=>{
@@ -50,13 +62,13 @@ const RefuelingInfo = ({navigation}) => {
     }
 
     const navigateToVehicleForm = ()=>{
-        navigation.navigate('vehicles' , {screen : 'addVehiclesForm'})
+        navigation.navigate('Vehicles' , {screen : 'addVehiclesForm'})
     }
 
     const navigateToRefuelingForm = ()=>{
-        navigation.navigate('refuelingForm');
+        navigation.navigate('refuelingForm' );
     }
-    console.log(vehRefuelingData)
+    // console.log(vehRefuelingData)
   return (
     <View style={styles.container}>
         <View style={styles.headingContainer}>
@@ -78,7 +90,7 @@ const RefuelingInfo = ({navigation}) => {
                 <View style={styles.addVehicle}>
                     <AddVehicle handlePress={navigateToVehicleForm}/>
                 </View>
-            ):vehRefuelingData.length == 0 ?(
+            ):refuelDatas.length == 0 ?(
         
                 <View style={styles.noFuelContainer}>
                     <Image source={require('../rcs/clouds.png')}/>
@@ -86,7 +98,7 @@ const RefuelingInfo = ({navigation}) => {
                     <Text style={styles.noFuelSub}>Add a record using the + button below to begin your wealthcare journey</Text>
                 </View> 
             ): (<View style = {styles.refuelingDatas}>
-                    <RefuelingBox navigation={navigation} data={vehRefuelingData}/>
+                    <RefuelingBox navigation={navigation} data={refuelDatas}/>
                 </View>
             )
                 
@@ -143,7 +155,6 @@ const styles = StyleSheet.create({
         bottom : 0,
         right : 0
     },image : {
-        // backgroundColor : 'red'
     },refuelingDatas : {
 
     }

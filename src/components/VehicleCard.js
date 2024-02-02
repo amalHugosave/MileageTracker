@@ -26,14 +26,12 @@ const VehicleCard = ({data}) => {
 }
 const styles = StyleSheet.create({
     container :{
-      shadowColor: '#171717',
-      shadowOffset: {width: 3, height: 5},
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
+      elavation :20,
       backgroundColor : "white",
-      borderRadius : 8,
+      borderRadius : 10,
       marginBottom : 25,
-      alignItems : 'center'
+      alignItems : 'center',
+      width : "90%"
       // flex : 1
     },textContainer : {
       // backgroundColor :'red',
@@ -61,7 +59,9 @@ const styles = StyleSheet.create({
         color : '#0B3C58'
     },
     image : {
-      width: 324 , height: 148,
+      width: "100%" ,
+       height: 148,
+       borderRadius : 10
     
     }
 })

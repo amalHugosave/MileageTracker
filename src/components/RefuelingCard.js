@@ -3,13 +3,18 @@ import { StyleSheet, View , Image,Text, Pressable } from 'react-native'
 import moment from 'moment'
 
 const dayNames = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-const RefuelingCard = ({data , navigation}) => {
+const RefuelingCard = ({data , navigation , ind}) => {
    const {date , fuelConsumed , price} = data;
     const day = dayNames[date.getDay()];
     const formattedDate = moment(date).format('D MMM \'YY');
 
     const handleNavigation = ()=>{
-        navigation.navigate('editingRefuelingForm' , {data});
+        // navigation.setOptions(data);
+        if(ind == 0)
+            navigation.navigate('Refueling' , {screen : 'editingRefuelingData' , params : {data} });
+        else
+            navigation.navigate('editingRefuelingData' , {data} );
+
     }
   return (
     <Pressable onPress={handleNavigation} style={styles.container}>

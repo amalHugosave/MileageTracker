@@ -2,10 +2,13 @@
 import { useState } from 'react'
 import { View ,TextInput, Text, StyleSheet} from 'react-native'
 
-const TextWith2Inputs = ({heading , inp1 , inp2,getData}) => {
-
-
-    const [data , setData] = useState(['' , '']);
+const TextWith2Inputs = ({heading , inp1 , inp2,getData , values}) => {
+    let st1 = '' , st2 = ''
+    if(values){
+        st1 = values[0].toString()
+        st2 = values[1].toString()
+    }
+    const [data , setData] = useState([st1 , st2]);
 
     const handleData= (action , payload)=>{
         if(action == 'inp1'){
@@ -16,13 +19,12 @@ const TextWith2Inputs = ({heading , inp1 , inp2,getData}) => {
             getData([data[0] ,payload ]);
         }
     }
-
   return (
     <View style={styles.container}>
         <Text style={styles.heading}>{heading}</Text>
         <View style={styles.inputsContainer}>
-            <TextInput keyboardType='numeric' onChangeText={(text)=>handleData('inp1' , text)} style={styles.input} placeholder={inp1}/>
-            <TextInput keyboardType='numeric' onChangeText={(text)=>handleData('inp2' , text)} style={styles.input} placeholder={inp2}/>
+            <TextInput value={ data[0]} keyboardType='numeric' onChangeText={(text)=>handleData('inp1' , text)} style={styles.input} placeholder={inp1}/>
+            <TextInput value={data[1]} keyboardType='numeric' onChangeText={(text)=>handleData('inp2' , text)} style={styles.input} placeholder={inp2}/>
         </View>
     </View>
   )

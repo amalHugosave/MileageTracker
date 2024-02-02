@@ -22,7 +22,7 @@ const VehiclesInfo = ({navigation}) => {
       
     }
     getVehcles();
-  } ,[vehiclesInRealm ])
+  } ,[vehiclesInRealm  , id])
 
   // console.log("y")
   
@@ -48,9 +48,11 @@ const VehiclesInfo = ({navigation}) => {
             </View >
               ):(
             <ScrollView style={styles.cardContainer}>
+              <View style={styles.cardContainerStyles}>
             {
                 vehcles.map((vehicle)=><VehicleCard key={vehicle._id} data={vehicle}/>)
             }
+            </View>
             </ScrollView>
            )
           }
@@ -92,8 +94,9 @@ const styles = StyleSheet.create({
   },addvehicleContainer :{
      flex : 1,
      justifyContent : 'center',
-     padding : 30,
-     backgroundColor : 'red'
+     padding : 30
+  },cardContainerStyles :{
+    alignItems :'center'
   }
 })
 
