@@ -15,6 +15,9 @@ const DrawerNavigator = () => {
         drawerStyle: isLargeScreen ? null : { width: '85%' }
       }}
       drawerContent={(props) => <UserPopUp {...props}/>}
+      drawerStyle={{
+        overlayColor: 'transparent', // Set overlayColor to 'transparent' to make the drawer overlay the existing content
+      }}
     >
       <Drawer.Screen name="profile" component={ProfilePage} options={{headerShown : false}}/>
       {/* <Drawer.Screen name="popUp" component={UserPopUp} options={{headerShown : false }}/> */}

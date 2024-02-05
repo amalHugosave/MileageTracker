@@ -10,7 +10,7 @@ import { useRealm } from '@realm/react';
 import { Users } from '../Database/models/UsersSchema';
 import CheckPassCode from '../screens/CheckPassCode';
 import CheckPasscodesContainer from '../screens/CheckPasscodesContainer';
-
+import Splash2 from '../screens/Splash2';
 const Stack = createNativeStackNavigator();
 
 const StackNavigationAfterOnboarding = () => {
@@ -36,8 +36,8 @@ const StackNavigationAfterOnboarding = () => {
     <NavigationContainer>
         {
           activeUser &&
-          <Stack.Navigator initialRouteName={activeUser._id ? (activeUser.passcode.length === 4 ?"checkPasscode" : "tabNavigation" ): "login"} >
-              <Stack.Screen name="splash" component={Splash} options={{headerShown : false}}/>
+          <Stack.Navigator  >
+              <Stack.Screen name="splash2" component={Splash2} options={{headerShown : false}}/>
               <Stack.Screen name="login" component={Login} options={{headerShown : false}} />
               <Stack.Screen name="checkPasscode"  options={{headerShown : false}} >{()=><CheckPassCode user={activeUser}/>}</Stack.Screen> 
               <Stack.Screen name="checkPasscodeContainer" component={CheckPasscodesContainer} options={{headerShown : false}} />

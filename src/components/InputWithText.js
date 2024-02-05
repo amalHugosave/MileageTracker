@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { View  ,StyleSheet, TextInput , Text} from 'react-native'
 
-const InputWithText = ({text,required , handleInputs , id, errorText , validationFun , handleError}) => {
+const InputWithText = ({value ,text,required , handleInputs , id, errorText , validationFun , handleError}) => {
     const [error , setError] = useState(false);
+    const [val , setVal] = useState(value);
     const onChangeInput = (text)=>{
         handleInputs(id , text);
         if(required && !text){
@@ -18,7 +19,7 @@ const InputWithText = ({text,required , handleInputs , id, errorText , validatio
   return (
     <View style ={styles.container}>
         <Text style={styles.InputText}>{text} {required && <Text style={styles.star}>*</Text>}</Text>
-        <TextInput style={styles.input} onChangeText={onChangeInput}/>
+        <TextInput  value={val} style={styles.input} onChangeText={(text) =>{onChangeInput(text); setVal(text)}}/>
         {error && <Text style={styles.error}>{errorText}</Text>}
     </View>
   )

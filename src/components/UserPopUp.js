@@ -25,6 +25,7 @@ const UserPopUp = ({navigation}) => {
   }
 
   const logoutAccept = ()=>{
+    setIsModalopen(false);
     realm.write(()=>{
       const toUpdate = realm.objects(Users).filtered('active == $0' , true);
       // console.log(toUpdate);
@@ -38,6 +39,7 @@ const UserPopUp = ({navigation}) => {
 
   const logoutReject = () =>{
     setIsModalopen(false);
+
   }
 
   const OpenDeleteModal = ()=>{
@@ -45,6 +47,7 @@ const UserPopUp = ({navigation}) => {
     setIsDeleteUserModalOpen(true);
   }
   const deleteAccept = ()=>{
+    setIsDeleteUserModalOpen(false);
     const toDelete = realm
       .objects(Users)
       .filtered('_id == $0', id);
@@ -96,7 +99,9 @@ const styles = StyleSheet.create({
   container :{
     backgroundColor : '#F0F2F2',
     flex : 1,
-    alignItems : 'center'
+    alignItems : 'center',
+    // zIndex : 1,
+    // position : 'absolute'
   },top :{
     marginVertical:40,
     paddingLeft : 30,
@@ -109,14 +114,17 @@ const styles = StyleSheet.create({
     backgroundColor : 'white',
     width : '85%',
     borderRadius : 10,
-    marginBottom : "90%",
+    // marginBottom : "90%",
+    // flex : 0.8,
     elevation : 10
   },underline :{
     borderColor : '#CED8DE',
     borderWidth :0.5,
     marginHorizontal : 10
   },logout :{
-    width : '85%'
+    width : '85%',
+    flex : 0.8,
+    justifyContent : 'flex-end'
   },ShowVersion : {
     backgroundColor : '#58798C',
     width : '100%',

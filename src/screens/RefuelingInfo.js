@@ -11,6 +11,7 @@ import { Refueling } from '../Database/models/RefuelingSchema';
 import RefuelingBox from '../components/RefuelingBox';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
 const RefuelingInfo = ({navigation}) => {
+    const { BSON, ObjectId } = require('bson');
     const realm = useRealm();
     const {id} = useUserStore();
     const {vehId , name ,setVehicle} = useVehicleStore();
@@ -50,13 +51,15 @@ const RefuelingInfo = ({navigation}) => {
         if(curVehiclesOfUser.length > 0 && !vehId){
             setVehicle({name : curVehiclesOfUser[0].name , type : curVehiclesOfUser[0].type , engine : curVehiclesOfUser[0].engine , userId : curVehiclesOfUser[0].userId , vehId : curVehiclesOfUser[0]._id , image : curVehiclesOfUser[0].image});
         }
+        
         setUservehicles(arr);
 
 
     }
 
     const handleSelectChange = (value)=>{
-        const obj = realm.objects(Vehicles).filtered('_id == $0' , value)[0];
+        const objectId = new ObjectId(value);
+        const obj = realm.objects(Vehicles).filtered('_id == $0' , objectId)[0];
         // console.log(obj._id);
         setVehicle({name : obj.name , type : obj.type , engine : obj.engine , userId : obj.userId , vehId : obj._id , image : obj.image});
     }
@@ -74,10 +77,12 @@ const RefuelingInfo = ({navigation}) => {
         <View style={styles.headingContainer}>
             <Text style={styles.heading}>Refueling</Text>
             {
-                userVehicles.length > 0 && (
+                userVehicles.length > 0 &&(
                     <RNPickerSelect
+                    
                     style={{...pickerSelectStyles}}
                     placeholder={{}}
+                    value = ""
                     onValueChange={(value) => {handleSelectChange(value)}}
                     items={userVehicles}
                     />
@@ -96,16 +101,20 @@ const RefuelingInfo = ({navigation}) => {
                     <Image source={require('../rcs/clouds.png')}/>
                     <Text style={styles.noFuelHeading}>No refuelling records yet!</Text>
                     <Text style={styles.noFuelSub}>Add a record using the + button below to begin your wealthcare journey</Text>
+                    <Pressable onPress={navigateToRefuelingForm} style ={styles.button}>
+                        <Image style={styles.image} source={require('../rcs/AddUser.png')} />
+                    </Pressable>
                 </View> 
             ): (<View style = {styles.refuelingDatas}>
                     <RefuelingBox navigation={navigation} data={refuelDatas}/>
+                    <Pressable onPress={navigateToRefuelingForm} style ={styles.button}>
+                        <Image style={styles.image} source={require('../rcs/AddUser.png')} />
+                    </Pressable>
                 </View>
             )
                 
         }
-        <Pressable onPress={navigateToRefuelingForm} style ={styles.button}>
-            <Image style={styles.image} source={require('../rcs/AddUser.png')} />
-        </Pressable>
+        
         
     </View>
 
@@ -156,7 +165,7 @@ const styles = StyleSheet.create({
         right : 0
     },image : {
     },refuelingDatas : {
-
+        height : '80%'
     }
 })
 
@@ -175,6 +184,7 @@ const pickerSelectStyles = StyleSheet.create({
       color: 'black',
       backgroundColor : 'white',
       width : 300,
+      textAlign : 'center',
       paddingRight: 30, // to ensure the text is never behind the icon
     },
     inputAndroid: {
@@ -189,6 +199,7 @@ const pickerSelectStyles = StyleSheet.create({
       color: 'black',
       backgroundColor : 'white',
       width : 300,
+      textAlign : 'center',
       paddingRight: 30, // to ensure the text is never behind the icon
     },
   });

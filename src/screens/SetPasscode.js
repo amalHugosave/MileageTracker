@@ -13,7 +13,7 @@ import {BSON} from 'realm';
 import CommonButton from '../components/Buttons/CommonButton'
 import useVehicleArrayStore from '../state/VehiclesArray'
 import { Vehicles } from '../Database/models/VehiclesSchema'
-
+const colors = ['#FF5733', '#5733FF','#33A1FF',  '#FF33A1', '#FF3361', '#3361FF'];
 const SetPasscode = ({navigation}) => {
 
     const {setPasscode ,passcode ,name , nickname , email,setId , id} = useUserStore();
@@ -30,16 +30,17 @@ const SetPasscode = ({navigation}) => {
                 nickname,
                 email,
                 passcode : ind == 0 ? firstData : '',
-                active : true
+                active : true,
+                color : colors[Math.floor(Math.random() * 6)]
             });
           });
           setId(id);
 
     }
-    const getUser = ()=>{
+    // const getUser = ()=>{
         
-        console.log(users);
-    }
+    //     console.log(users);
+    // }
 
 
 
@@ -52,7 +53,6 @@ const SetPasscode = ({navigation}) => {
     
     const handleSkip = ()=>{
         AddUserToRealm(1);
-        getUser();
         navigation.navigate('tabNavigation')
 
     }

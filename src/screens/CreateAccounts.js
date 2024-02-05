@@ -21,7 +21,9 @@ const CreateAccounts = ({navigation}) => {
     const [error3 , setError3] = useState(true);
 
     const handleSubmit = ()=>{
-        setUser({name : data[0] , nickname : data[1] , email : data[2]})
+        setUser({name : data[0] , nickname : data[1] , email : data[2]});
+        setChecked(false);
+        setData(['' , '' ,'']);
         navigation.navigate('setPasscode')
 
     }
@@ -54,7 +56,7 @@ const CreateAccounts = ({navigation}) => {
             else
                 setError3(err);
       }
-      console.log(error3 , "error 3")
+    //   console.log(error3 , "error 3")
   return (
     <LinearGradient style={{flex : 1}}  colors={['#C5E3DC', '#F6F6EC']} >
     <View style={styles.container}>
@@ -64,9 +66,9 @@ const CreateAccounts = ({navigation}) => {
             <BackButton style={styles.image} navigation={navigation}/>
             <Text style={styles.heading}>Create Account</Text>
             <View style={styles.inputscontainer}>
-                <InputWithText handleError={handleError} text='Name' required={true} handleInputs={handleInputs} id={0} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
-                <InputWithText handleError={handleError} text='Nickname' required={false} handleInputs={handleInputs} id={1} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
-                <InputWithText handleError={handleError} text='Email Address' required={true} handleInputs={handleInputs} id={2} errorText='Invalid email' validationFun={isValidGmail}/>
+                <InputWithText value={data[0]}  handleError={handleError} text='Name' required={true} handleInputs={handleInputs} id={0} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
+                <InputWithText alue={data[1]} handleError={handleError} text='Nickname' required={false} handleInputs={handleInputs} id={1} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
+                <InputWithText alue={data[2]} handleError={handleError} text='Email Address' required={true} handleInputs={handleInputs} id={2} errorText='Invalid email' validationFun={isValidGmail}/>
             </View>
         </View>
         <View style={styles.bottom}>

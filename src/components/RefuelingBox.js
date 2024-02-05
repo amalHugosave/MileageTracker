@@ -56,7 +56,7 @@ const RefuelingBox = ({data , navigation}) => {
                 onValueChange={(value) => {handleSelectChange(value)}}
                 items={rnpData}
             />
-            <Text style={styles.heading}>{data.length} Records | {today.subtract(30 , 'days').format('DD/MMM/YY')} - Today</Text>
+            <Text style={styles.heading}>{filteredData.length} Records | {value === 3 ? 'All Time' : today.subtract(value == 0 ? 7 : value == 1 ?30 : 1 , value == 2 ? 'years' :'days').format('DD/MMM/YY') + "- Today"}</Text>
         </View>
 
         <ScrollView style={styles.refuelingDataBox}>
@@ -74,7 +74,9 @@ const RefuelingBox = ({data , navigation}) => {
 const styles = StyleSheet.create({
     container : {
         width : Dimensions.get('window').width,
-        paddingHorizontal : 30
+        paddingHorizontal : 30,
+        flex : 1
+        // backgroundColor : 'red'
     },heading :{
         textAlign : 'center'
     },refuelingDataBox : {

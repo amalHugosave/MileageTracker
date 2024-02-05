@@ -33,20 +33,6 @@ const sampleImages = [`iVBORw0KGgoAAAANSUhEUgAAAUQAAACUCAYAAADro1BdAAAACXBIWXMAA
   const {addVehicle} = useVehicleArrayStore();
   const realm = useRealm();
 
-  // const convertImageToBase64 =  async() => {
-  //   const imgPath = data.image || `/src/rcs/${data.type}wheeler.png`;
-  //   // console.log(imgPath);
-    
-  //     try {
-  //       const imagePath = `/Users/amalshibu/Desktop/PROJ/MileageTracker/src/rcs/${data.type}wheeler.png`;
-  //       //  console.log(imagePath)
-  //       const base64String = await RNFS.readFile(imagePath, 'base64');
-  //       handleFieldChange('image' , base64String);
-  //       return base64String;
-  //     } catch (error) {
-  //       console.log('Error reading file:', error);
-  //     }
-  // };
 
 const handlePress = ()=>{
   navigation.navigate('vehiclesInfo');
@@ -88,7 +74,8 @@ const handlePress = ()=>{
       })
     })
     
-      navigation.navigate('vehiclesInfo')
+      navigation.navigate('congratz' , {image , name : data.name});
+
   }
 
 
@@ -188,8 +175,8 @@ const styles = StyleSheet.create({
         color : 'black',
         textAlign : 'center'
     },bottom : {
-        // position :'absolute',
-        // bottom : 0,
+        position :'absolute',
+        bottom : 0,
         // backgroundColor : 'red',
         marginTop : 160,
         paddingBottom : 20

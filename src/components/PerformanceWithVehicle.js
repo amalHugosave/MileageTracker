@@ -10,6 +10,7 @@ import { VictoryBar, VictoryChart, VictoryTheme ,VictoryAxis ,VictoryLine , Vict
 import AddRefuelingData from "./AddRefuelingData";
 import BarChart from "./BarChart";
 
+
 const priceYTickValues = [
     [{ x: 0, y: 0 },
     { x: 6, y: 0 }],
@@ -43,6 +44,8 @@ const priceYTickValues = [
   ];
   
 const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isRefuelingData , mileageChartData}) => {
+
+    const { BSON, ObjectId } = require('bson');
     const realm = useRealm();
     const allVehicles = useQuery(Vehicles);
     const {vehId ,setVehicle} = useVehicleStore();
@@ -70,6 +73,7 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
         let arr = [];
         userVehicles.map((veh)=>{
             arr.push({label : veh.name , value : veh._id});
+            // console.log(typeof(arr[arr.length - 1].value))
             if(veh._id.equals(vehId)){
     
                 const t = arr[0];
@@ -80,7 +84,11 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
         setCurUservehicles(arr)
     }
     const handleSelectChange = (value)=>{
-        const obj = realm.objects(Vehicles).filtered('_id == $0' , value)[0];
+        const objectId = new ObjectId(value);
+        const obj = realm.objects(Vehicles).filtered('_id == $0' , objectId)[0];
+        // console.log(value , typeof(value) , "obj");
+        
+        // console.log(objectId , typeof(objectId));
         setVehicle({name : obj.name , type : obj.type , engine : obj.engine , userId : obj.userId , vehId : obj._id , image : obj.image});
     }
 
@@ -88,17 +96,20 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
         navigation.navigate('Refueling' , {screen : 'refuelingForm'}  )
     }
 
-    console.log(mileageChartData[1].mileage);
+    // console.log(mileageChartData[1].mileage);
 
   return (
     <View style={styles.container}>
         <Text style={styles.subHeading}>Choose the vehicle</Text>
+       {curUserVehicles.length > 0 &&
         <RNPickerSelect
-        style={{...pickerSelectStyles}}
-        placeholder={{}}
-        onValueChange={(value) => {handleSelectChange(value)}}
-        items={curUserVehicles}
-        />
+            style={{...pickerSelectStyles}}
+            placeholder={{}}
+            onValueChange={(value) => {handleSelectChange(value)}}
+            items={curUserVehicles}
+            />
+        }
+
         <Image style={styles.image} source={image.length > 300 ? { uri: `data:image/png;base64,${image}` } : {uri :image}}/>
         {
             isRefuelingData ?(
@@ -191,7 +202,7 @@ const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
         marginLeft : 109, 
         marginVertical : 10,
-  
+        textAlign : 'center',
       fontSize: 16,
       paddingVertical: 12,
       paddingHorizontal: 10,
@@ -215,6 +226,7 @@ const pickerSelectStyles = StyleSheet.create({
       color: 'black',
       backgroundColor : 'white',
       width : 170,
+      textAlign : 'center',
       paddingRight: 30, // to ensure the text is never behind the icon
     },
   });

@@ -88,7 +88,7 @@ const RefuelingForm = ({navigation , route}) => {
             <DatePicker
                 modal
                 open={open}
-                date={data.date || new Date}
+                date={date}
                 mode='date'
                 onConfirm={(date) => {
                     setOpen(false)

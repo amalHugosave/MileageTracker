@@ -138,13 +138,17 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
   return (
     <View style={styles.container}>
         <Text style={styles.welcome}>Here is everything about your</Text>
+        {
+          vehicleSelectData.length > 0 &&
         <RNPickerSelect
              placeholder={{}}
             // value={id}
+            value = ""
             style={{...pickerSelectStyles}}
             onValueChange={(value) => handleSelectChange(value)}
             items={vehicleSelectData}
         />
+        }
         <View style={styles.imageContainer}>
         <Image style={styles.image} source={image.length > 300 ? { uri: `data:image/png;base64,${image}` } : {uri :image}}/>
         </View>
@@ -184,7 +188,7 @@ const pickerSelectStyles = StyleSheet.create({
       paddingVertical: 12,
       paddingHorizontal: 10,
       borderWidth: 1,
-      borderColor: 'gray',
+      borderColor: 'black',
       borderRadius: 8,
       color: 'black',
       backgroundColor : 'white',

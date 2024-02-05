@@ -112,20 +112,22 @@ const RefuelingForm = ({navigation }) => {
         
 
         <View style={styles.middle}>
-            <RNPickerSelect
-                style={{...pickerSelectStyles}}
-                placeholder={{}}
-                onValueChange={(value) => {setCurVehId(value)}}
-                items={userVehicles}
-            />
-            
+            {   userVehicles.length > 0 &&
+                <RNPickerSelect
+                    style={{...pickerSelectStyles}}
+                    placeholder={{}}
+                    value = ""
+                    onValueChange={(value) => {setCurVehId(value)}}
+                    items={userVehicles}
+                />
+            }
             <Pressable onPress={()=>setOpen(true)} style={styles.input}>
                 <Text>{date ? moment(date).format('DD/MM/YYYY') : 'Refueling Date'}</Text>
             </Pressable>
             <DatePicker
                 modal
                 open={open}
-                date={data.date || new Date}
+                date={data.date || new Date()}
                 mode='date'
                 onConfirm={(date) => {
                     setOpen(false)
@@ -161,12 +163,13 @@ const styles = StyleSheet.create({
         flex : 1,
         alignItems : 'center'
     },top:{
-        flex : 0.2
+        flex : 0.2,
+        marginBottom : 20
     },
     heading : {
         textAlign:'center',
         fontSize : 22,
-        color : 'black'
+        color : 'black',
     },middle :{
         alignItems : 'center',
         flex : 0.75,
@@ -190,6 +193,7 @@ const styles = StyleSheet.create({
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
         // marginLeft : 40,
+        textAlign : 'center',
         marginTop : 20,
       fontSize: 16,
       paddingVertical: 12,
@@ -204,6 +208,7 @@ const pickerSelectStyles = StyleSheet.create({
     },
     inputAndroid: {
         // marginLeft : 40,
+        textAlign : 'center',
         marginTop : 20,
       fontSize: 16,
       paddingHorizontal: 10,

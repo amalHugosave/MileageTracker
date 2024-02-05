@@ -7,6 +7,7 @@ import useUserStore from '../state/Users';
 import LinearGradient from 'react-native-linear-gradient';
 import { Vehicles } from '../Database/models/VehiclesSchema';
 import useVehicleArrayStore from '../state/VehiclesArray';
+import UserCardMod from '../components/Cards/UserCardMod';
 // import { useQuery } from '@realm/react';
 
 const sampleUser = require('../rcs/sampleUser.png');
@@ -48,7 +49,7 @@ const Login = ({navigation}) => {
 
                     <View style={styles.userContainer}>
                         {
-                            users.map((user , index)=>(<UserCard key={index} image ={sampleUser} data={user} handlePress={goToHomePage} />))
+                            users.map((user , index)=>(<UserCardMod key={index} data={user} handlePress={goToHomePage} />))
                         }
                             <UserCard image={addUser} data={{name : 'Add User'}} handlePress={goToCreateAccount}/>  
 

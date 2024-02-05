@@ -47,12 +47,16 @@ const CheckPassCode = ({user}) => {
     const getData = (curData)=>{
         setData(curData);
     }
-    // console.log(actualUser, " user")
+    const handleFullFill = (val)=>{
+        // console.log("y");1
+        val.setState({ code : '' })
+    }
+    
   return (
     <LinearGradient style={{flex : 1}}  colors={['#C5E3DC', '#F6F6EC']} >
         <SafeAreaView style={styles.container}>
             <Text style={styles.heading}>Welcome back!</Text>
-            <PasscodeEntry getData={getData} heading="Enter your 4-Digit Passcode" isfocused={true} subtitle="Just checking it's really you!"/>
+            <PasscodeEntry getData={getData} handleFullFill={handleFullFill} heading="Enter your 4-Digit Passcode" isfocused={true} subtitle="Just checking it's really you!"/>
         </SafeAreaView>
     </LinearGradient>
   )
