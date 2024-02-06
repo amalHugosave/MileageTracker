@@ -17,7 +17,7 @@ const SignUp = ({navigation}) => {
         Track your miles towards a prosperous financial journey!
         </Text>
         <View>
-            <Image source={require('../rcs/signupFooter.png')}/>
+            <Image style={styles.bottomImage} source={require('../rcs/signupFooter.png')}/>
         </View>
     </View>
     </LinearGradient>
@@ -56,6 +56,8 @@ const styles = StyleSheet.create({
         color : '#0B3C58',
         textAlign : 'center',
         padding : 10,
+        width : '100%'
+    },bottomImage :{
         width : '100%'
     }
 

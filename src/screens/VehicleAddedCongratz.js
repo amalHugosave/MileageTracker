@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
         marginTop : 20
     },bottomImage :{
         position : 'absolute',
-        bottom : 0
+        bottom : 0,
+        width : '100%'
     }
 })
 

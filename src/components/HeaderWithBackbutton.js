@@ -3,9 +3,9 @@ import { View  ,Image, StyleSheet, Pressable} from 'react-native'
 
 const HeaderWithBackbutton = ({handlePress}) => {
   return (
-    <View>
+    <View style={styles.container}>
         <Pressable onPress={handlePress} style={styles.backButtonContainer}></Pressable>
-        <Image source={require('../rcs/headerwithbackbutton.png')} />
+        <Image style={styles.image} source={require('../rcs/headerwithbackbutton.png')} />
     </View>
   )
 }
@@ -16,8 +16,10 @@ const styles = StyleSheet.create({
         position : 'absolute',
         left : 15,
         top : 25,
-        zIndex : 1,
+        zIndex : 1
 
+    },image : {
+      width : '100%'
     }
 })
 

@@ -164,7 +164,8 @@ const styles = StyleSheet.create({
         alignItems : 'center'
     },top:{
         flex : 0.2,
-        marginBottom : 20
+        marginBottom : 20,
+        width : '100%'
     },
     heading : {
         textAlign:'center',

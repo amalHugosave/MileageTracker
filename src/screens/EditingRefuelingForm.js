@@ -123,7 +123,8 @@ const styles = StyleSheet.create({
         flex : 1,
         alignItems : 'center'
     },top:{
-        flex : 0.2
+        flex : 0.2,
+        width : '100%'
     },
     heading : {
         textAlign:'center',
