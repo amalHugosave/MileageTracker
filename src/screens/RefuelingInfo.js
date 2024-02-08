@@ -21,18 +21,19 @@ const RefuelingInfo = ({navigation}) => {
     const [vehRefuelingData , setVehRefuelingData] = useState([]);
     const {refuelDatas , setRefuelState ,curVehId} = useRefuelTriggerStore();
     // console.log(refuelDatas , "refuelDatas")
+
     useEffect(()=>{
         getvehiclesOfUser();
+        
+    } , [VehiclesArray ,vehId])
+
+    useEffect (()=>{
         getRefuelingDataOfVeh();
-    } , [VehiclesArray , vehId, id ])
+    }, [])
 
     const getRefuelingDataOfVeh = ()=>{
-        // console.log(curVehId , "curVehId");
-        if(vehId && !curVehId.equals(vehId))
-        {
             const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId).sorted('date' , true);
             setRefuelState({curVehId : vehId , refuelDatas : [...curRefuelingData]});
-        }
     }
     const getvehiclesOfUser = ()=>{
         
@@ -56,8 +57,9 @@ const RefuelingInfo = ({navigation}) => {
     const handleSelectChange = (value)=>{
         const objectId = new ObjectId(value);
         const obj = realm.objects(Vehicles).filtered('_id == $0' , objectId)[0];
-        // console.log(obj._id);
         setVehicle({name : obj.name , type : obj.type , engine : obj.engine , userId : obj.userId , vehId : obj._id , image : obj.image});
+        const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , value).sorted('date' , true);
+        setRefuelState({curVehId : value , refuelDatas : [...curRefuelingData]});
     }
 
     const navigateToVehicleForm = ()=>{

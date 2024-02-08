@@ -17,7 +17,6 @@ const ProfilePage = ({navigation}) => {
     const {setVehicle} = useVehicleStore();
     const {setVehicleState} = useVehicleArrayStore();
     const realm = useRealm();
-    console.log(id, name ,"veh");
     useEffect(()=>{
         if(!id){
             const activeUser = realm.objects(Users).filtered('active == $0' , true)[0];

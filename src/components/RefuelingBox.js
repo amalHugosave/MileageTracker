@@ -43,7 +43,6 @@ const RefuelingBox = ({data , navigation}) => {
         }
         // console.log(date.toString());
         const newData = data.filter((curdata)=> curdata.date >= date);
-        console.log(newData);
         setFilteredData(newData);
 
     }

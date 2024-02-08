@@ -11,7 +11,7 @@ const RefuelingNav = () => {
   return (
     <Stack.Navigator>
           <Stack.Screen name="refuelingInfo" component={RefuelingInfo} options={{headerShown : false}}/>
-          <Stack.Screen name='refuelingForm' component={RefuelingForm}  options={{headerShown : false}} />
+          <Stack.Screen name='refuelingForm' component={RefuelingForm}  options={{headerShown : false }} />
            <Stack.Screen name='editingRefuelingData' component={EdtingRefuelingData} options={{headerShown : false}} />
            <Stack.Screen name='editingRefuelingForm' component={EditingRefuelingForm} options={{headerShown : false}} />
 

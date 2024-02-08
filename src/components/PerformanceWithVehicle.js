@@ -5,64 +5,83 @@ import { View ,StyleSheet ,Text ,Image} from "react-native";
 import { useQuery , useRealm } from "@realm/react";
 import { Vehicles } from "../Database/models/VehiclesSchema";
 import useVehicleStore from "../state/Vehicles";
-import useUserStore from "../state/Users";
-import { VictoryBar, VictoryChart, VictoryTheme ,VictoryAxis ,VictoryLine , VictoryScatter} from "victory-native";
 import AddRefuelingData from "./AddRefuelingData";
 import BarChart from "./BarChart";
+import LineChart from "./LineChart";
+import { Refueling } from "../Database/models/RefuelingSchema";
+import useRefuelTriggerStore from "../state/RefuelTrigger";
+import useVehicleArrayStore from "../state/VehiclesArray";
 
-
-const priceYTickValues = [
-    [{ x: 0, y: 0 },
-    { x: 6, y: 0 }],
-    [{ x: 0, y: 1000 },
-    { x: 6, y: 1000 }],
-    [{ x: 0, y: 2000 },
-    { x: 6, y: 2000 }],
-    [{ x: 0, y: 3000 },
-    { x: 6, y: 3000 }],
-    [{ x: 0, y: 4000 },
-    { x: 6, y: 4000 }],
-    [{ x: 0, y: 5000 },
-    { x: 6, y: 5000 }],
-    // Add more lines as needed
-  ];
-
-  const mileageYTickValues = [
-    [{ x: 0, y: 0 },
-    { x: 6, y: 0 }],
-    [{ x: 0, y: 10 },
-    { x: 6, y: 10 }],
-    [{ x: 0, y: 20 },
-    { x: 6, y: 20 }],
-    [{ x: 0, y: 30 },
-    { x: 6, y: 30 }],
-    [{ x: 0, y: 40 },
-    { x: 6, y: 40}],
-    [{ x: 0, y: 50 },
-    { x: 6, y: 50}],
-    // Add more lines as needed
+const months = [
+    'January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December'
   ];
   
-const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isRefuelingData , mileageChartData}) => {
-
+const PerformanceWithVehicle = ({navigation ,userVehicles}) => {
+    const {setRefuelState ,refuelDatas} = useRefuelTriggerStore();
     const { BSON, ObjectId } = require('bson');
     const realm = useRealm();
-    const allVehicles = useQuery(Vehicles);
     const {vehId ,setVehicle} = useVehicleStore();
-    
-    const {id} = useUserStore();
     const [curUserVehicles , setCurUservehicles] = useState([]);
-    
+    const [priceChartData , setPriceChartData] = useState(null)
+    const [mileageChartData , setMileageChartData] = useState(null);
+    const {VehiclesArray} = useVehicleArrayStore();
     // const [vehRefuelingData , setVehRefuelingData] = useState([]);
     const {image} = useVehicleStore();
     
-    
+    const getChartData = ()=>{
+        const fiveMonthsAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 4, 1);
+        const curRefuelingData = refuelDatas.filter((data)=> data.date >= fiveMonthsAgo)
+        getPriceChartData(curRefuelingData);
+        getMileageChartData(curRefuelingData)
+    }
+
+
+    const getPriceChartData = (curRefuelingData)=>{
+      let monthsArr =[0 , 0, 0 ,0 , 0 , 0, 0, 0 ,0 , 0 , 0 , 0]
+      for(let i = 0;i<curRefuelingData.length ; i++){
+          const month = curRefuelingData[i].date.getMonth();
+          monthsArr[month] += curRefuelingData[i].price;
+      }
+      let arr = [];
+      const curMonth = new Date().getMonth();
+      for(let i = 4;i>=0;i--){
+          const month = (curMonth - i + 12)%12 ;
+          const obj = {month : months[month], price : monthsArr[month]}
+          arr.push(obj);
+      }
+      setPriceChartData(arr);
+    }
+
+    const getMileageChartData = (curRefuelingData)=>{
+      let dist =[0 , 0, 0 ,0 , 0 , 0, 0, 0 ,0 , 0 , 0 , 0]
+      let fuelCon = [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0];
+      for(let i = 0;i<curRefuelingData.length ; i++){
+          const month = curRefuelingData[i].date.getMonth();
+          dist[month] += (curRefuelingData[i].odometerEnd - curRefuelingData[i].odometerStart);
+          fuelCon[month] += curRefuelingData[i].fuelConsumed;
+      }
+      let arr = [];
+      const curMonth = new Date().getMonth();
+      for(let i = 4;i>=0;i--){
+          const month = (curMonth - i + 12)%12 ;
+          const obj = {month :  months[month], mileage : parseFloat(fuelCon[month] === 0 ? 0 : (dist[month]/fuelCon[month]).toFixed(2))}
+          arr.push(obj);
+      }
+      setMileageChartData(arr);
+
+    }
 
     useEffect(()=>{
         getvehiclesOfUser();
-        // getRefuelingDataOfVeh();
-    } , [vehId])
+        
+    } , [VehiclesArray , vehId])
 
+    useEffect(()=>{
+        getChartData();
+    }, [refuelDatas])
+    // console.log(refuelDatas);
      const data = [
     { month: 'sept', price: 13000 },
     { month: 'oct', price: 16500 },
@@ -86,17 +105,15 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
     const handleSelectChange = (value)=>{
         const objectId = new ObjectId(value);
         const obj = realm.objects(Vehicles).filtered('_id == $0' , objectId)[0];
-        // console.log(value , typeof(value) , "obj");
-        
-        // console.log(objectId , typeof(objectId));
         setVehicle({name : obj.name , type : obj.type , engine : obj.engine , userId : obj.userId , vehId : obj._id , image : obj.image});
+        const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , value).sorted('date' , true);
+        setRefuelState({curVehId : value , refuelDatas : [...curRefuelingData]});
     }
 
     const handlePressForAddFuel = ()=>{
         navigation.navigate('Refueling' , {screen : 'refuelingForm'}  )
     }
 
-    // console.log(mileageChartData[1].mileage);
 
   return (
     <View style={styles.container}>
@@ -112,12 +129,13 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
 
         <Image style={styles.image} source={image.length > 300 ? { uri: `data:image/png;base64,${image}` } : {uri :image}}/>
         {
-            isRefuelingData ?(
+            refuelDatas.length > 0 ?(
             <View >
-                <BarChart priceChartData={priceChartData} />
+                {priceChartData && <BarChart priceChartData={priceChartData} />}
                 <Text style={styles.chartHeading}>Vehicle mileage performance</Text>
                 <View style={styles.chart}>
-                <VictoryChart padding={{ top: 30, right: 50, bottom: 50, left: 50 }} 
+                {mileageChartData && <LineChart mileageChartData={mileageChartData}/>}
+                {/* <VictoryChart padding={{ top: 30, right: 50, bottom: 50, left: 50 }} 
                 domainPadding={20} width= {370} theme={VictoryTheme.material} >
                 <VictoryAxis
                     style={{ 
@@ -131,8 +149,8 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
                  style={{ axis: { stroke: "transparent" } ,
                  ticks : {stroke: "transparent"},
                  grid: { stroke: '#CED8DE' , strokeDasharray : [0,0] }}}
-                //  tickValues={mileageYTickValues.map((item)=>item[0].y)}
-                //  tickFormat={mileageYTickValues.map((item) => `${item[0].y}`)}
+                 tickValues={mileageYTickValues.map((item)=>item[0].y)}
+                 tickFormat={mileageYTickValues.map((item) => `${item[0].y}`)}
                  />
                     <VictoryScatter
                         size={5}
@@ -152,16 +170,7 @@ const PerformanceWithVehicle = ({navigation ,userVehicles , priceChartData , isR
                         data={mileageChartData}
                         interpolation="cardinal"
                     />
-                    {/* {mileageYTickValues.map((line, index) => {
-                    return(
-                    
-                    <VictoryLine
-                    key={index}
-                    style={{ data: { stroke: "gray",strokeWidth : 0.5 } }}
-                    data={line}
-                    />
-                )})} */}
-                </VictoryChart>
+                </VictoryChart> */}
                 </View>
             </View>
         ):  <AddRefuelingData handlePress={handlePressForAddFuel}/> 

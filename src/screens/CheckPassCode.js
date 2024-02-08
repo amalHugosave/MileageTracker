@@ -12,8 +12,6 @@ import useVehicleArrayStore from '../state/VehiclesArray'
 import { Vehicles } from '../Database/models/VehiclesSchema'
 import useVehicleStore from '../state/Vehicles'
 const CheckPassCode = ({user}) => {
-    // console.log(route , "route")
-    // const [actualUser , setUserState] = useState(route ?user : route.params.user);
     const {setVehicleState} = useVehicleArrayStore();
     const realm = useRealm();
     const navigation = useNavigation();

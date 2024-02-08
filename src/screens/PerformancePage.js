@@ -11,86 +11,25 @@ import useVehicleStore from "../state/Vehicles";
 import useRefuelTriggerStore from '../state/RefuelTrigger';
 import useVehicleArrayStore from '../state/VehiclesArray';
 
-const months = [
-  'January', 'February', 'March', 'April',
-  'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December'
-];
+
 const PerformancePage = ({navigation}) => {
   const realm = useRealm();
   const {curVehId,setRefuelState} = useRefuelTriggerStore();
-    const [priceChartData , setPriceChartData] = useState(null)
-    const {vehId  } = useVehicleStore();
-    const [isRefuelingData , setIsRefuelingData] = useState(false);
-    const [mileageChartData , setMileageChartData] = useState(null);
+    // const {VehiclesArray} = useVehicleArrayStore();
     const allRefueling = useQuery(Refueling);
     const {VehiclesArray} = useVehicleArrayStore();
- 
+    const { refuelDatas} = useRefuelTriggerStore();
 
-    useEffect(()=>{
-      getRefuelingDataOfVeh();
-    } , [vehId ,allRefueling])
+    // useEffect(()=>{
+    //   getChartData();
+    // } , [vehId ,allRefueling])
 
 
     const navigateToVehicleForm = ()=>{
       navigation.navigate('Vehicles' , {screen: 'addVehiclesForm'})
     }
     
-    const getRefuelingDataOfVeh = ()=>{
-      const fiveMonthsAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 4, 1);
-      if(vehId && !curVehId.equals(vehId))
-        {
-            const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId).sorted('date' , true);
-            // console.log(curRefuelingData , "curRefuelingdata");
-            setRefuelState({curVehId : vehId , refuelDatas : [...curRefuelingData]});
-        }
-      if(vehId){
-        const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0 AND date >= $1' ,vehId , fiveMonthsAgo).sorted('date');
-        getPriceChartData(curRefuelingData);
-        getMileageChartData(curRefuelingData)
-      }
-      
-      // setVehRefuelingData(curRefuelingData);
-    }
 
-    const getPriceChartData = (curRefuelingData)=>{
-      if(curRefuelingData.length > 0)
-        setIsRefuelingData(true)
-      else  
-        setIsRefuelingData(false)
-      let monthsArr =[0 , 0, 0 ,0 , 0 , 0, 0, 0 ,0 , 0 , 0 , 0]
-      for(let i = 0;i<curRefuelingData.length ; i++){
-          const month = curRefuelingData[i].date.getMonth();
-          monthsArr[month] += curRefuelingData[i].price;
-      }
-      let arr = [];
-      const curMonth = new Date().getMonth();
-      for(let i = 4;i>=0;i--){
-          const month = (curMonth - i + 12)%12 ;
-          const obj = {month : months[month], price : monthsArr[month]}
-          arr.push(obj);
-      }
-      setPriceChartData(arr);
-    }
-
-    const getMileageChartData = (curRefuelingData)=>{
-      let dist =[0 , 0, 0 ,0 , 0 , 0, 0, 0 ,0 , 0 , 0 , 0]
-      let fuelCon = [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0];
-      for(let i = 0;i<curRefuelingData.length ; i++){
-          const month = curRefuelingData[i].date.getMonth();
-          dist[month] += (curRefuelingData[i].odometerEnd - curRefuelingData[i].odometerStart);
-          fuelCon[month] += curRefuelingData[i].fuelConsumed;
-      }
-      let arr = [];
-      const curMonth = new Date().getMonth();
-      for(let i = 4;i>=0;i--){
-          const month = (curMonth - i + 12)%12 ;
-          const obj = {month :  months[month], mileage : parseFloat(fuelCon[month] === 0 ? 0 : (dist[month]/fuelCon[month]).toFixed(2))}
-          arr.push(obj);
-      }
-      setMileageChartData(arr);
-
-    }
     // console.log(VehiclesArray)
     // console.log(userVehicles , priceChartData , mileageChartData,vehId);
   return (
@@ -100,8 +39,8 @@ const PerformancePage = ({navigation}) => {
       <Text style={styles.heading}>Performance</Text>
         <ScrollView style={styles.scrollContainer}>
         {
-            VehiclesArray.length > 0 && priceChartData && mileageChartData ? 
-             <PerformanceWithVehicle navigation={navigation} mileageChartData={mileageChartData} isRefuelingData={isRefuelingData} userVehicles={VehiclesArray} priceChartData={priceChartData}/>
+            VehiclesArray.length > 0  ? 
+             <PerformanceWithVehicle navigation={navigation} userVehicles={VehiclesArray}/>
             :
             (
                 <View style ={styles.addVehicleContainer}>
