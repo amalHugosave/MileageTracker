@@ -10,34 +10,34 @@ import useVehicleStore from '../state/Vehicles';
 import { Refueling } from '../Database/models/RefuelingSchema';
 import RefuelingBox from '../components/RefuelingBox';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
+import useVehicleArrayStore from '../state/VehiclesArray';
 const RefuelingInfo = ({navigation}) => {
+    const { VehiclesArray} = useVehicleArrayStore();
     const { BSON, ObjectId } = require('bson');
     const realm = useRealm();
     const {id} = useUserStore();
     const {vehId , name ,setVehicle} = useVehicleStore();
     const [userVehicles , setUservehicles] = useState([]);
-    const allVehicles = useQuery(Vehicles);
     const [vehRefuelingData , setVehRefuelingData] = useState([]);
     const {refuelDatas , setRefuelState ,curVehId} = useRefuelTriggerStore();
     // console.log(refuelDatas , "refuelDatas")
     useEffect(()=>{
         getvehiclesOfUser();
         getRefuelingDataOfVeh();
-    } , [allVehicles , vehId, id ])
+    } , [VehiclesArray , vehId, id ])
 
     const getRefuelingDataOfVeh = ()=>{
         // console.log(curVehId , "curVehId");
         if(vehId && !curVehId.equals(vehId))
         {
             const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId).sorted('date' , true);
-            // console.log(curRefuelingData , "curRefuelingdata");
             setRefuelState({curVehId : vehId , refuelDatas : [...curRefuelingData]});
         }
     }
     const getvehiclesOfUser = ()=>{
-        const curVehiclesOfUser = realm.objects(Vehicles).filtered('userId == $0' , id);
+        
         let arr = [];
-        curVehiclesOfUser.map((veh)=>{
+        VehiclesArray.map((veh)=>{
             arr.push({label : veh.name , value : veh._id})
 
             if(vehId && veh._id.equals(vehId)){
@@ -47,10 +47,6 @@ const RefuelingInfo = ({navigation}) => {
                 arr[arr.length - 1] = t;
             }
         })
-
-        if(curVehiclesOfUser.length > 0 && !vehId){
-            setVehicle({name : curVehiclesOfUser[0].name , type : curVehiclesOfUser[0].type , engine : curVehiclesOfUser[0].engine , userId : curVehiclesOfUser[0].userId , vehId : curVehiclesOfUser[0]._id , image : curVehiclesOfUser[0].image});
-        }
         
         setUservehicles(arr);
 

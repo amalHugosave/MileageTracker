@@ -8,29 +8,27 @@ import HomePageWithVehicles from '../components/HomePageWithVehicles';
 import LinearGradient from 'react-native-linear-gradient';
 import { Users } from '../Database/models/UsersSchema';
 import useVehicleArrayStore from '../state/VehiclesArray';
+import { Swipeable } from 'react-native-gesture-handler';
+import { SwipeableListView } from 'react-native';
+import useVehicleStore from '../state/Vehicles';
 const ProfilePage = ({navigation}) => {
     const {name , nickname , id , setUser} = useUserStore();
-    const {VehiclesArray} = useVehicleArrayStore(); 
-    const [userVehicles , setUserVehicles] = useState([]);
-    const AllVehicles = useQuery(Vehicles);
+    const {VehiclesArray} = useVehicleArrayStore();
+    const {setVehicle} = useVehicleStore();
+    const {setVehicleState} = useVehicleArrayStore();
     const realm = useRealm();
-
-    const getUserVehicles = ()=>{
-        const curUserVehicles = realm.objects(Vehicles).filtered('userId == $0' , id);
-        setUserVehicles(curUserVehicles);
-    }
-
+    console.log(id, name ,"veh");
     useEffect(()=>{
         if(!id){
             const activeUser = realm.objects(Users).filtered('active == $0' , true)[0];
             setUser({name : activeUser.name , nickname : activeUser.nickname , email : activeUser.email , id : activeUser._id , passcode : activeUser.passcode});
+            const vehicles = realm.objects(Vehicles).filtered('userId == $0' , activeUser._id);
+            if(vehicles.length > 0)
+                setVehicle({name : vehicles[0].name , engine : vehicles[0].engine , vehId : vehicles[0]._id , userId : vehicles[0].userId , type : vehicles[0].type , image : vehicles[0].image});
+            setVehicleState({VehiclesArray : [...vehicles]});
        }
     },[])
 
-    useEffect(() =>{
-        if(id)
-            getUserVehicles();
-    } ,[AllVehicles , id])
 
 
     const    addVehicles = ()=>{
@@ -42,7 +40,9 @@ const ProfilePage = ({navigation}) => {
     
 
   return (
-    <LinearGradient style={{flex : 1}}  colors={['#C5E3DC', '#F6F6EC']} >
+    
+    <LinearGradient style={{flex : 1}}   colors={['#C5E3DC', '#F6F6EC']} >
+        <Swipeable >
         <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Pressable onPress={() =>navigation.openDrawer()}>
@@ -55,8 +55,8 @@ const ProfilePage = ({navigation}) => {
                 
             </View>
             {
-            userVehicles.length !== 0  ? (
-                <HomePageWithVehicles vehiclesData={userVehicles} navigation={navigation}/>
+            VehiclesArray.length !== 0  ? (
+                <HomePageWithVehicles vehiclesData={VehiclesArray} navigation={navigation}/>
                 ) :(
                     <HomePageNoVehicles handlePress={addVehicles}/>
 
@@ -64,7 +64,9 @@ const ProfilePage = ({navigation}) => {
                 )
     }
         </ScrollView>
+        </Swipeable>
     </LinearGradient>
+    
   )
 }
 const styles = StyleSheet.create({

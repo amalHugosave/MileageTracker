@@ -26,11 +26,10 @@ const sampleImages = [`iVBORw0KGgoAAAANSUhEUgAAAUQAAACUCAYAAADro1BdAAAACXBIWXMAA
 
 // console.log(sampleImages[0])
 
-  
+  const {addVehicleState} = useVehicleArrayStore();
   const {id} = useUserStore()
   const [data ,setData] = useState({name : '',type :0 ,engine : '' ,image : '' });
   const [errors, setErrors] = useState({name : errorstext[0] , type : errorstext[1]})
-  const {addVehicle} = useVehicleArrayStore();
   const realm = useRealm();
 
 
@@ -63,17 +62,22 @@ const handlePress = ()=>{
 
 
 
-  const handleSubmit = async ()=>{
+  const handleSubmit =  ()=>{
     const image = data.image || sampleImages[data.type - 2];
+    const newId = new BSON.ObjectId;
+    // console.log(newId);
     realm.write(()=>{
       realm.create(Vehicles , {
-        _id : new BSON.ObjectId,
+        _id : newId,
         ...data,
         image : image,
         userId : id
       })
     })
-    
+    addVehicleState({_id : newId,
+      ...data,
+      image : image,
+      userId : id})
       navigation.navigate('congratz' , {image , name : data.name});
 
   }
@@ -101,21 +105,13 @@ const handlePress = ()=>{
       }
     });
   };
-
-  console.log(data.image)
   return (
     <View style={styles.container}>
-      {/* <Text>{data.image}</Text> */}
         <HeaderWithBackbutton handlePress={handlePress} />
         <Text val={data.name}  style={styles.heading}> Add Vehicles</Text>
         <Pressable style={styles.pressableressable} onPress={openImagePicker}>
           <Image style={styles.image} source={data.image ?{ uri: data.image } : require('../rcs/addPhoto.png')} />
         </Pressable>
-        {/* <Image
-            source={}
-            style={styles.image}
-            resizeMode="contain"
-          /> */}
         <View style={styles.inputContainer}>
             <TextInput  onChangeText={(text)=>handleFieldChange('name' , text)} style={styles.input} placeholder='Vehicle Name'/>
             {errors.name && <Text style={styles.error}>{errors.name}</Text>}

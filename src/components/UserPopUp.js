@@ -11,9 +11,13 @@ import { Users } from '../Database/models/UsersSchema'
 import { useNavigationState } from '@react-navigation/native'
 import { Vehicles } from '../Database/models/VehiclesSchema'
 import { Refueling } from '../Database/models/RefuelingSchema'
+import useVehicleArrayStore from '../state/VehiclesArray'
+import useVehicleStore from '../state/Vehicles'
+import useRefuelTriggerStore from '../state/RefuelTrigger'
 const UserPopUp = ({navigation}) => {
   const realm = useRealm();
-  const state = useNavigationState(state => state);
+  const {resetRefuelState} = useRefuelTriggerStore();
+  const {deleteVehiclesState} = useVehicleArrayStore();
   const {id , nickname , name} = useUserStore();
   const userImage = require('../rcs/dummyProfile.png');
   const deleteImage = require('../rcs/deleteUser.png');
@@ -33,7 +37,9 @@ const UserPopUp = ({navigation}) => {
         toUpdate[0].active = false;
       // console.log(toUpdate);
     })
-    
+
+    deleteVehiclesState();
+    resetRefuelState();
     navigation.navigate('login');
   }
 

@@ -5,43 +5,24 @@ import { useQuery, useRealm } from '@realm/react'
 import { Vehicles } from '../Database/models/VehiclesSchema'
 import useUserStore from '../state/Users'
 import AddVehicle from '../components/AddVehicle'
+import useVehicleArrayStore from '../state/VehiclesArray'
 
 
 const VehiclesInfo = ({navigation}) => {
-  // const vehcles = [{name : 'Yamaha' , type : 2 , engine : 155 ,id : 1}];
-  // console.log('z' , useQuery(Vehicles)[2].userId)
-  const vehiclesInRealm = useQuery(Vehicles);
-  const {id} = useUserStore();
-  const realm = useRealm();
-  const [vehcles , setVehcles] = useState([]);
-  useEffect(()=>{
-    const getVehcles = ()=>{
-      // console.group("y" ,vehcles ,id)
-      const uservehicles = realm.objects(Vehicles).filtered('userId == $0' , id);
-      setVehcles(uservehicles);
-      
-    }
-    getVehcles();
-  } ,[vehiclesInRealm  , id])
-
-  // console.log("y")
-  
+  const {VehiclesArray} = useVehicleArrayStore();
   const handlePress = ()=>{
     navigation.navigate('addVehiclesForm')
   }
-
   const navigateToForm = ()=>{
     navigation.navigate('addVehiclesForm')
   }
-
   return (
     
     <View style={styles.container}>
-      {/* {console.log("z")} */}
         <Text style={styles.heading}>Vehicles</Text>
         
         {
-          vehcles.length === 0 ?
+          VehiclesArray.length === 0 ?
           (
             <View style={styles.addvehicleContainer}>
               <AddVehicle handlePress={navigateToForm}/> 
@@ -50,7 +31,7 @@ const VehiclesInfo = ({navigation}) => {
             <ScrollView style={styles.cardContainer}>
               <View style={styles.cardContainerStyles}>
             {
-                vehcles.map((vehicle)=><VehicleCard key={vehicle._id} data={vehicle}/>)
+                VehiclesArray.map((vehicle)=><VehicleCard key={vehicle._id} data={vehicle}/>)
             }
             </View>
             </ScrollView>

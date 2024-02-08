@@ -23,23 +23,34 @@ const BarChart = ({priceChartData}) => {
         <Text style={styles.chartHeading} >Money spend on fuel</Text>
         <View style={styles.ChartContainer}>
         <View style={styles.chart}>
-            <VictoryChart padding={{ top: 30, right: 50, bottom: 50, left: 50 }}  domainPadding={20} width={370} theme={VictoryTheme.material}>
+            <VictoryChart 
+            padding={{ top: 30, right: 50, bottom: 50, left: 50 }}  
+            domainPadding={20} width={370} 
+            theme={VictoryTheme.material}
+            >
                 <VictoryAxis
-                    style={{ axis: { stroke: "transparent" } ,
-                ticks : {stroke: "transparent"}}}
+                    style={{ 
+                        // axis: { stroke: "transparent" } ,
+                    grid: { stroke: 'transparent' },
+                    ticks : {stroke: "transparent"},
+               }}
                 />
 
                 <VictoryAxis dependentAxis  
-                tickLength={0}
-                style={{ axis: { stroke: "transparent" } ,
-                ticks : {stroke: "transparent"}}}
-                tickValues={priceYTickValues.map((item)=>item[0].y)}
-                tickFormat={priceYTickValues.map((item) => `${item[0].y/1000}K`)}
+                // tickLength={0}
+                style={{ 
+                    axis: { stroke: "transparent" } ,
+                    ticks : {stroke: "transparent"} , 
+                    grid: { stroke: '#CED8DE' , strokeDasharray : [0,0] }
+                }}
+                // tickValues={priceYTickValues.map((item)=>item[0].y)}
+                // tickFormat={priceYTickValues.map((item) => `${item[0].y/1000}K`)}
+                tickFormat={(t) => t >= 1000 ? `${t%1000 == 0 ? Math.round(t/1000) :(t/1000).toFixed(1)}k` : `${t}`}
                 />
                 <VictoryBar animate data={priceChartData}
                 style={{ data: { fill: "#EB655F" } }}
                 x="month" y="price" />
-                {priceYTickValues.map((line, index) => {
+                {/* {priceYTickValues.map((line, index) => {
                     return(
                     
                     <VictoryLine
@@ -47,7 +58,8 @@ const BarChart = ({priceChartData}) => {
                     style={{ data: { stroke: "gray",strokeWidth : 0.5 } }}
                     data={line}
                     />
-                )})}
+                )
+                })} */}
             </VictoryChart>
         </View>    
         </View>

@@ -28,6 +28,8 @@ const useRefuelTriggerStore = create((set) => ({
 
             return ({...state , refuelDatas : newRefData})
         })
+    },resetRefuelState : ()=>{
+        set((state)=>({curVehId : new BSON.ObjectId() , refuelDatas : []}))
     }
 }))
 

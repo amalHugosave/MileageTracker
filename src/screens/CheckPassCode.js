@@ -10,14 +10,16 @@ import { useRealm } from '@realm/react'
 import { Users } from '../Database/models/UsersSchema'
 import useVehicleArrayStore from '../state/VehiclesArray'
 import { Vehicles } from '../Database/models/VehiclesSchema'
+import useVehicleStore from '../state/Vehicles'
 const CheckPassCode = ({user}) => {
     // console.log(route , "route")
     // const [actualUser , setUserState] = useState(route ?user : route.params.user);
-    
+    const {setVehicleState} = useVehicleArrayStore();
     const realm = useRealm();
     const navigation = useNavigation();
     const {setUser}  = useUserStore();
     const [data , setData] = useState("");
+    const {setVehicle} = useVehicleStore();
     useEffect(()=>{
         submit();
     }, [data]);
@@ -40,6 +42,10 @@ const CheckPassCode = ({user}) => {
                 toUpdate[0].active = true;
             })
             setUser({name : user.name , id : user._id , nickname : user.nickname , passcode : user.passcode , email : user.email});
+            const vehicles = realm.objects(Vehicles).filtered('userId == $0' , user._id);
+            setVehicleState({VehiclesArray : [...vehicles]});
+            if(vehicles.length > 0)
+                setVehicle({name : vehicles[0].name , engine : vehicles[0].engine , vehId : vehicles[0]._id , userId : vehicles[0].userId , type : vehicles[0].type , image : vehicles[0].image});
             navigation.navigate('tabNavigation');
         }
     }

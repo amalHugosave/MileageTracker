@@ -9,7 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useRealm , useQuery} from '@realm/react';
 import {Users} from '../Database/models/UsersSchema';
 import useUserStore from '../state/Users'
-import {BSON} from 'realm';
+import { BSON } from 'realm'
 import CommonButton from '../components/Buttons/CommonButton'
 import useVehicleArrayStore from '../state/VehiclesArray'
 import { Vehicles } from '../Database/models/VehiclesSchema'
@@ -17,11 +17,10 @@ const colors = ['#FF5733', '#5733FF','#33A1FF',  '#FF33A1', '#FF3361', '#3361FF'
 const SetPasscode = ({navigation}) => {
 
     const {setPasscode ,passcode ,name , nickname , email,setId , id} = useUserStore();
-    const [countPasscode , setCountPasscode] = useState(0);
     const realm = useRealm();
-    const users = useQuery(Users);
 
     const AddUserToRealm = (ind)=>{
+        // console.log(BSON , "BSON")
         const id = new BSON.ObjectId()
         realm.write(() => {
             realm.create(Users, {

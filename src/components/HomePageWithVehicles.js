@@ -10,6 +10,7 @@ import useVehicleStore from '../state/Vehicles';
 import { Refueling } from '../Database/models/RefuelingSchema';
 import HomePageWithRefuelingData from './HomePageWithRefuelingData';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
+import useVehicleArrayStore from '../state/VehiclesArray';
 // import 
 // useVehicleStore
 const months = [
@@ -18,22 +19,17 @@ const months = [
     'September', 'October', 'November', 'December'
   ];
 const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
-    const AllVehicles = useQuery(Vehicles)
+    const {VehiclesArray} = useVehicleArrayStore();
     const [vehicleSelectData , setvehicleSelectData] = useState([]);
-    const {setVehicle  ,image ,vehId ,name ,  getState} = useVehicleStore();
+    const {setVehicle  ,image ,vehId } = useVehicleStore();
     const [mileage , setMileage] = useState(null);
     const [avMileage , setAvMileage] = useState(null);
     const [ priceChartData , setPriceChartData] = useState([]);
     const [latestRefuelingData , setLatestRefuelingData] = useState([]);
     const realm = useRealm();
     const {curVehId , setRefuelState , refuelDatas} = useRefuelTriggerStore();
-    // console.log(vehId)
-    const allRefueling = useQuery(Refueling);
     const getSelectData = ()=>{
         let selectData = [];
-        if(vehId == ''){
-            setVehicle({name : vehiclesData[0].name , engine : vehiclesData[0].engine , vehId : vehiclesData[0]._id , userId : vehiclesData[0].userId , type : vehiclesData[0].type , image : vehiclesData[0].image});
-        }
         vehiclesData.map((vehicleData) =>{
             
             selectData.push({label : vehicleData.name , value : vehicleData._id});
@@ -50,11 +46,11 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
     useEffect(()=>{
         getSelectData();
 
-    } , [AllVehicles , vehId])
+    } , [ vehId])
   
       useEffect(()=>{
         getRefuelingDataOfVeh();
-      } , [vehId ,allRefueling ])
+      } , [vehId ,refuelDatas ])
 
       const getRefuelingDataOfVeh = ()=>{
         if(vehId && !curVehId.equals(vehId))
@@ -63,13 +59,13 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
             setRefuelState({curVehId : vehId , refuelDatas : [...curRefuelingData]});
         }
         if(vehId){
-
             const fiveMonthsAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 4, 1);
-            const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0 AND date >= $1' ,vehId , fiveMonthsAgo).sorted('date');
+            const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0 AND date >= $1' ,vehId , fiveMonthsAgo).sorted('date' ,true);
             getMileage();
             getPriceChartData([...curRefuelingData]);
             
             const lat = refuelDatas.slice(0 , 5);
+            // console.log(lat);
             setLatestRefuelingData(...[lat]);
         }
         // setVehRefuelingData(curRefuelingData);
@@ -133,7 +129,7 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
     }
 
     
-    // console.log("x" , mileage);
+    // console.log("x" , latestRefuelingData.length ,mileage ,avMileage  ,priceChartData.length);
 
   return (
     <View style={styles.container}>

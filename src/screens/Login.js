@@ -8,6 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Vehicles } from '../Database/models/VehiclesSchema';
 import useVehicleArrayStore from '../state/VehiclesArray';
 import UserCardMod from '../components/Cards/UserCardMod';
+import useVehicleStore from '../state/Vehicles';
 // import { useQuery } from '@realm/react';
 
 const sampleUser = require('../rcs/sampleUser.png');
@@ -16,8 +17,8 @@ const Login = ({navigation}) => {
     const realm = useRealm();
     const users = useQuery(Users);
     const {setUser} = useUserStore()
-    const {addVehicle} = useVehicleArrayStore();
-
+    const {setVehicleState} = useVehicleArrayStore();
+    const { setVehicle} = useVehicleStore();
     const goToHomePage = (data)=>{
         if(data.passcode)
             navigation.navigate('checkPasscodeContainer' ,{user :data})
@@ -30,7 +31,9 @@ const Login = ({navigation}) => {
             navigation.navigate('tabNavigation');
             
             const vehicles = realm.objects(Vehicles).filtered('userId == $0' , data._id);
-            addVehicle(vehicles);
+            if(vehicles.length > 0)
+                setVehicle({name : vehicles[0].name , engine : vehicles[0].engine , vehId : vehicles[0]._id , userId : vehicles[0].userId , type : vehicles[0].type , image : vehicles[0].image});
+            setVehicleState({VehiclesArray : [...vehicles]});
         }
     }
 

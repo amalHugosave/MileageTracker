@@ -2,16 +2,14 @@ import { create } from 'zustand'
 
 const useVehicleArrayStore = create((set) => ({
     VehiclesArray : [],
-    addVehicle : (vehicle) => {
-        set((state) => ([...state.VehiclesArray , ...vehicle]))
+    setVehicleState : (newState) => {
+        set((state) => (newState))
     },
-    deleteVehicles : (vehicleId)=>{
-        set((state) => {
-            const newState = state.VehiclesArray.filter((vehicle)=>
-                vehicle._id !== vehicleId
-            )
-            return newState;
-        })
+    addVehicleState : (vehicle) => {
+        set((state) => ({VehiclesArray : [...state.VehiclesArray , vehicle]}))
+    },
+    deleteVehiclesState : ()=>{
+        set((state) =>  ({VehiclesArray : []}))   
     }
 }))
 

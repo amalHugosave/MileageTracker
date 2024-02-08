@@ -9,6 +9,7 @@ import PerformanceWithVehicle from '../components/PerformanceWithVehicle';
 import { Refueling } from "../Database/models/RefuelingSchema";
 import useVehicleStore from "../state/Vehicles";
 import useRefuelTriggerStore from '../state/RefuelTrigger';
+import useVehicleArrayStore from '../state/VehiclesArray';
 
 const months = [
   'January', 'February', 'March', 'April',
@@ -19,29 +20,17 @@ const PerformancePage = ({navigation}) => {
   const realm = useRealm();
   const {curVehId,setRefuelState} = useRefuelTriggerStore();
     const [priceChartData , setPriceChartData] = useState(null)
-    const {id} = useUserStore();
-    const [userVehicles , setUservehicles] = useState([]);
-    const allVehicles = useQuery(Vehicles);
-    const {vehId ,setVehicle } = useVehicleStore();
+    const {vehId  } = useVehicleStore();
     const [isRefuelingData , setIsRefuelingData] = useState(false);
     const [mileageChartData , setMileageChartData] = useState(null);
     const allRefueling = useQuery(Refueling);
-    useEffect(()=>{
-      getUservehicles();
-      
-    } , [allVehicles ,id])
+    const {VehiclesArray} = useVehicleArrayStore();
+ 
 
     useEffect(()=>{
       getRefuelingDataOfVeh();
-    } , [vehId ,allRefueling , id])
+    } , [vehId ,allRefueling])
 
-    const getUservehicles = ()=>{
-      const curuserveh = realm.objects(Vehicles).filtered('userId == $0' , id);
-      setUservehicles(curuserveh);
-      if(!vehId && curuserveh.length > 0){
-        setVehicle({name : curuserveh[0].name , type : curuserveh[0].type , engine : curuserveh[0].engine , userId : curuserveh[0].userId , vehId : curuserveh[0]._id , image : curuserveh[0].image});
-      }
-    }
 
     const navigateToVehicleForm = ()=>{
       navigation.navigate('Vehicles' , {screen: 'addVehiclesForm'})
@@ -102,7 +91,7 @@ const PerformancePage = ({navigation}) => {
       setMileageChartData(arr);
 
     }
-    
+    // console.log(VehiclesArray)
     // console.log(userVehicles , priceChartData , mileageChartData,vehId);
   return (
    
@@ -111,9 +100,8 @@ const PerformancePage = ({navigation}) => {
       <Text style={styles.heading}>Performance</Text>
         <ScrollView style={styles.scrollContainer}>
         {
-            userVehicles.length > 0 && priceChartData && mileageChartData ? 
-            // <></>
-             <PerformanceWithVehicle navigation={navigation} mileageChartData={mileageChartData} isRefuelingData={isRefuelingData} userVehicles={userVehicles} priceChartData={priceChartData}/>
+            VehiclesArray.length > 0 && priceChartData && mileageChartData ? 
+             <PerformanceWithVehicle navigation={navigation} mileageChartData={mileageChartData} isRefuelingData={isRefuelingData} userVehicles={VehiclesArray} priceChartData={priceChartData}/>
             :
             (
                 <View style ={styles.addVehicleContainer}>

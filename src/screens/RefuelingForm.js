@@ -14,6 +14,7 @@ import { Refueling } from '../Database/models/RefuelingSchema';
 import { BSON } from 'realm';
 import DoubleButton from '../components/Buttons/DoubleButton';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
+import useVehicleArrayStore from '../state/VehiclesArray';
 const RefuelingForm = ({navigation }) => {
     const {addRefuelData} = useRefuelTriggerStore();
     const realm = useRealm();
@@ -25,16 +26,15 @@ const RefuelingForm = ({navigation }) => {
     const [data , setData] = useState({  odometerStart :null , odometerEnd : null , fuelConsumed : null , price : null});
     const [date , setDate] = useState('')
     const [open, setOpen] = useState(false);
-    const refuelingData = useQuery(Refueling);
+    const {VehiclesArray} = useVehicleArrayStore();
     
     useEffect(()=>{
         getUserVehicles();
     },[vehId , AllVehicles ]);
 
     const getUserVehicles = ()=>{
-        const curVehiclesOfUser = realm.objects(Vehicles).filtered('userId == $0' , id);
         let arr = [];
-        curVehiclesOfUser.map((veh)=>{
+        VehiclesArray.map((veh)=>{
             arr.push({label : veh.name , value : veh._id});
             if(veh._id.equals(vehId)){
                 arr[arr.length - 1] = arr[0];
