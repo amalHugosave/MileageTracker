@@ -11,6 +11,7 @@ import useVehicleArrayStore from '../state/VehiclesArray';
 import { Swipeable } from 'react-native-gesture-handler';
 import { SwipeableListView } from 'react-native';
 import useVehicleStore from '../state/Vehicles';
+import LoadingSpinner from '../components/LoadingSpinner';
 const ProfilePage = ({navigation}) => {
     const {name , nickname , id , setUser} = useUserStore();
     const {VehiclesArray} = useVehicleArrayStore();
@@ -33,16 +34,10 @@ const ProfilePage = ({navigation}) => {
     const    addVehicles = ()=>{
         navigation.navigate('Vehicles',{screen : 'addVehiclesForm'});
     }
-    // const navigateToPopUp = ()=>{
-    //     navigation.navigate('popUp');
-    // }
-    
-
   return (
     
-    <LinearGradient style={{flex : 1}}   colors={['#C5E3DC', '#F6F6EC']} >
-        <Swipeable >
-        <ScrollView style={styles.container}>
+    <LinearGradient style={{flex : 1}}   colors={['#C5E3DC', '#F6F6EC']} >       
+    <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Pressable onPress={() =>navigation.openDrawer()}>
                     <Image source={require('../rcs/dummyProfile.png')}/>
@@ -63,7 +58,6 @@ const ProfilePage = ({navigation}) => {
                 )
     }
         </ScrollView>
-        </Swipeable>
     </LinearGradient>
     
   )

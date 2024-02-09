@@ -1,5 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import ProfilePage from '../screens/ProfilePage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Text } from 'react-native';
@@ -59,9 +60,28 @@ const TabNavigation = () => {
           // })
         })}>
             <Tab.Screen  name="Home" component={DrawerNavigator}  options={{headerShown : false}}/>
-            <Tab.Screen name="Refueling" component={RefuelingNav} options={{headerShown : false,}}/>
+            <Tab.Screen name="Refueling" component={RefuelingNav}
+            options={({ route }) => ({
+              tabBarStyle: ((route) => {
+                const routeName = getFocusedRouteNameFromRoute(route) ?? ""
+                if (routeName === 'refuelingForm' || routeName === 'editingRefuelingForm' || routeName === 'editingRefuelingData' ) {
+                  return { display: "none" }
+                }
+                return
+              } )(route)
+            ,headerShown : false})}/>
             <Tab.Screen name="Performance" component={PerformancePage} options={{headerShown : false}}/>
-            <Tab.Screen name="Vehicles" component={VehiclesNav } options={{headerShown : false }}/>
+            <Tab.Screen name="Vehicles" component={VehiclesNav } 
+              options={({ route }) => ({
+                tabBarStyle: ((route) => {
+                  const routeName = getFocusedRouteNameFromRoute(route) ?? ""
+                  if (routeName === 'addVehiclesForm' || routeName === 'congratz') {
+                    return { display: "none" }
+                  }
+                  return
+                } )(route)
+              ,headerShown : false})}
+            />
             
          </Tab.Navigator>
   )

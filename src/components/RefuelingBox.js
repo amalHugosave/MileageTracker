@@ -5,13 +5,13 @@ import moment from 'moment';
 import RefuelingCard from './RefuelingCard';
 import { useQuery } from '@realm/react';
 import { Refueling } from '../Database/models/RefuelingSchema';
-
+import Picker from './Picker/Picker';
 
 const rnpData = [
-    {label : 'All Time' , value : 3},
-    {label : 'Last 1 Year' , value : 2},
-    {label : 'Last 30 Days' , value : 1},
-    {label : 'Last 7 Days' , value : 0},
+    {name : 'All Time' , _id : 3},
+    {name : 'Last 1 Year' , _id : 2},
+    {name : 'Last 30 Days' , _id : 1},
+    {name : 'Last 7 Days' , _id : 0},
 ]
 const RefuelingBox = ({data , navigation}) => {
     const today = moment();
@@ -49,12 +49,13 @@ const RefuelingBox = ({data , navigation}) => {
   return (
     <View style={styles.container}>
         <View>
-            <RNPickerSelect
+        <Picker name={rnpData[0].name} list={rnpData} handleSelectChange={handleSelectChange} conStyles={175}/>
+            {/* <RNPickerSelect
                 style={{...pickerSelectStyles}}
                 placeholder={{}}
                 onValueChange={(value) => {handleSelectChange(value)}}
                 items={rnpData}
-            />
+            /> */}
             <Text style={styles.heading}>{filteredData.length} Records | {value === 3 ? 'All Time' : today.subtract(value == 0 ? 7 : value == 1 ?30 : 1 , value == 2 ? 'years' :'days').format('DD/MMM/YY') + "- Today"}</Text>
         </View>
 
@@ -74,10 +75,12 @@ const styles = StyleSheet.create({
     container : {
         width : Dimensions.get('window').width,
         paddingHorizontal : 30,
-        flex : 1
-        // backgroundColor : 'red'
+        flex : 1,
+        // backgroundColor : 'red',
+        zIndex : 0
     },heading :{
-        textAlign : 'center'
+        textAlign : 'center',
+        marginTop : 20
     },refuelingDataBox : {
         marginTop : 30
     }

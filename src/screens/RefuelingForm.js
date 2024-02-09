@@ -15,35 +15,19 @@ import { BSON } from 'realm';
 import DoubleButton from '../components/Buttons/DoubleButton';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
 import useVehicleArrayStore from '../state/VehiclesArray';
+import Picker from '../components/Picker/Picker';
 const RefuelingForm = ({navigation }) => {
     const {addRefuelData} = useRefuelTriggerStore();
     const realm = useRealm();
     const {id} = useUserStore();
-    const {vehId} = useVehicleStore();
+    const {vehId , name} = useVehicleStore();
     const [curVehid , setCurVehId] = useState(vehId);
-    const [userVehicles , setUserVehicles] = useState([]);
-    const AllVehicles = useQuery(Vehicles);
     const [data , setData] = useState({  odometerStart :null , odometerEnd : null , fuelConsumed : null , price : null});
     const [date , setDate] = useState('')
     const [open, setOpen] = useState(false);
     const {VehiclesArray} = useVehicleArrayStore();
-    
-    useEffect(()=>{
-        getUserVehicles();
-    },[vehId , AllVehicles ]);
 
-    const getUserVehicles = ()=>{
-        let arr = [];
-        VehiclesArray.map((veh)=>{
-            arr.push({label : veh.name , value : veh._id});
-            if(veh._id.equals(vehId)){
-                arr[arr.length - 1] = arr[0];
-                arr[0] = {label : veh.name , value : veh._id};
-            }
-            
-        })
-        setUserVehicles(arr);
-    }
+
 
     const handleData = (type , payload)=>{
         if(type === 'vehicle'){
@@ -112,14 +96,15 @@ const RefuelingForm = ({navigation }) => {
         
 
         <View style={styles.middle}>
-            {   userVehicles.length > 0 &&
-                <RNPickerSelect
-                    style={{...pickerSelectStyles}}
-                    placeholder={{}}
-                    value = ""
-                    onValueChange={(value) => {setCurVehId(value)}}
-                    items={userVehicles}
-                />
+            {   VehiclesArray.length > 0 &&
+                // <RNPickerSelect
+                //     style={{...pickerSelectStyles}}
+                //     placeholder={{}}
+                //     value = ""
+                //     onValueChange={(value) => {setCurVehId(value)}}
+                //     items={userVehicles}
+                // />
+                <Picker name={name} list={VehiclesArray} handleSelectChange={()=>{}} conStyles={300}/>
             }
             <Pressable onPress={()=>setOpen(true)} style={styles.input}>
                 <Text>{date ? moment(date).format('DD/MM/YYYY') : 'Refueling Date'}</Text>

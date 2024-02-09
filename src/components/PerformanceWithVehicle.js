@@ -11,6 +11,7 @@ import LineChart from "./LineChart";
 import { Refueling } from "../Database/models/RefuelingSchema";
 import useRefuelTriggerStore from "../state/RefuelTrigger";
 import useVehicleArrayStore from "../state/VehiclesArray";
+import Picker from "./Picker/Picker";
 
 const months = [
     'January', 'February', 'March', 'April',
@@ -22,8 +23,7 @@ const PerformanceWithVehicle = ({navigation ,userVehicles}) => {
     const {setRefuelState ,refuelDatas} = useRefuelTriggerStore();
     const { BSON, ObjectId } = require('bson');
     const realm = useRealm();
-    const {vehId ,setVehicle} = useVehicleStore();
-    const [curUserVehicles , setCurUservehicles] = useState([]);
+    const {vehId ,setVehicle , name} = useVehicleStore();
     const [priceChartData , setPriceChartData] = useState(null)
     const [mileageChartData , setMileageChartData] = useState(null);
     const {VehiclesArray} = useVehicleArrayStore();
@@ -74,11 +74,6 @@ const PerformanceWithVehicle = ({navigation ,userVehicles}) => {
     }
 
     useEffect(()=>{
-        getvehiclesOfUser();
-        
-    } , [VehiclesArray , vehId])
-
-    useEffect(()=>{
         getChartData();
     }, [refuelDatas])
     // console.log(refuelDatas);
@@ -88,20 +83,6 @@ const PerformanceWithVehicle = ({navigation ,userVehicles}) => {
     { month: 'nov', price: 14250 },
     { month: 'dec', price: 19000 }
   ];
-    const getvehiclesOfUser = ()=>{
-        let arr = [];
-        userVehicles.map((veh)=>{
-            arr.push({label : veh.name , value : veh._id});
-            // console.log(typeof(arr[arr.length - 1].value))
-            if(veh._id.equals(vehId)){
-    
-                const t = arr[0];
-                arr[0] = arr[arr.length - 1];
-                arr[arr.length - 1] = t;
-            }
-        })
-        setCurUservehicles(arr)
-    }
     const handleSelectChange = (value)=>{
         const objectId = new ObjectId(value);
         const obj = realm.objects(Vehicles).filtered('_id == $0' , objectId)[0];
@@ -118,13 +99,14 @@ const PerformanceWithVehicle = ({navigation ,userVehicles}) => {
   return (
     <View style={styles.container}>
         <Text style={styles.subHeading}>Choose the vehicle</Text>
-       {curUserVehicles.length > 0 &&
-        <RNPickerSelect
-            style={{...pickerSelectStyles}}
-            placeholder={{}}
-            onValueChange={(value) => {handleSelectChange(value)}}
-            items={curUserVehicles}
-            />
+       {VehiclesArray.length > 0 &&
+       <Picker name={name} list={VehiclesArray} handleSelectChange={handleSelectChange} conStyles={170}/>
+        // <RNPickerSelect
+        //     style={{...pickerSelectStyles}}
+        //     placeholder={{}}
+        //     onValueChange={(value) => {handleSelectChange(value)}}
+        //     items={curUserVehicles}
+        //     />
         }
 
         <Image style={styles.image} source={image.length > 300 ? { uri: `data:image/png;base64,${image}` } : {uri :image}}/>

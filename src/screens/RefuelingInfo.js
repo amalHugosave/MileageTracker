@@ -11,6 +11,7 @@ import { Refueling } from '../Database/models/RefuelingSchema';
 import RefuelingBox from '../components/RefuelingBox';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
 import useVehicleArrayStore from '../state/VehiclesArray';
+import Picker from '../components/Picker/Picker';
 const RefuelingInfo = ({navigation}) => {
     const { VehiclesArray} = useVehicleArrayStore();
     const { BSON, ObjectId } = require('bson');
@@ -18,16 +19,12 @@ const RefuelingInfo = ({navigation}) => {
     const {id} = useUserStore();
     const {vehId , name ,setVehicle} = useVehicleStore();
     const [userVehicles , setUservehicles] = useState([]);
-    const [vehRefuelingData , setVehRefuelingData] = useState([]);
     const {refuelDatas , setRefuelState ,curVehId} = useRefuelTriggerStore();
     // console.log(refuelDatas , "refuelDatas")
 
-    useEffect(()=>{
-        getvehiclesOfUser();
-        
-    } , [VehiclesArray ,vehId])
 
     useEffect (()=>{
+        console.log("yes" ,refuelDatas.length)
         getRefuelingDataOfVeh();
     }, [])
 
@@ -75,20 +72,22 @@ const RefuelingInfo = ({navigation}) => {
         <View style={styles.headingContainer}>
             <Text style={styles.heading}>Refueling</Text>
             {
-                userVehicles.length > 0 &&(
-                    <RNPickerSelect
+                VehiclesArray.length > 0 &&(
+                    // <RNPickerSelect
                     
-                    style={{...pickerSelectStyles}}
-                    placeholder={{}}
-                    value = ""
-                    onValueChange={(value) => {handleSelectChange(value)}}
-                    items={userVehicles}
-                    />
+                    // style={{...pickerSelectStyles}}
+                    // placeholder={{}}
+                    // value = ""
+                    // onValueChange={(value) => {handleSelectChange(value)}}
+                    // items={userVehicles}
+                    // />
+                    <Picker name={name} list={VehiclesArray} handleSelectChange={handleSelectChange} conStyles={300}/>
+                    
                 )
             }
         </View>
         {
-            userVehicles.length == 0 ?
+            VehiclesArray.length == 0 ?
             (
                 <View style={styles.addVehicle}>
                     <AddVehicle handlePress={navigateToVehicleForm}/>
@@ -129,7 +128,9 @@ const styles = StyleSheet.create({
         borderBottomColor :' gray',
         borderBottomWidth :0.5,
         alignItems : 'center',
-        width : Dimensions.get('window').width
+        width : Dimensions.get('window').width,
+        paddingBottom : 10,
+        zIndex : 1
     },
     heading : {
         textAlign : 'center',

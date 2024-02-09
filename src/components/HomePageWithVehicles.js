@@ -11,6 +11,8 @@ import { Refueling } from '../Database/models/RefuelingSchema';
 import HomePageWithRefuelingData from './HomePageWithRefuelingData';
 import useRefuelTriggerStore from '../state/RefuelTrigger';
 import useVehicleArrayStore from '../state/VehiclesArray';
+import useLoading from './Hooks/Loading';
+import Picker from './Picker/Picker';
 // import 
 // useVehicleStore
 const months = [
@@ -18,9 +20,8 @@ const months = [
     'May', 'June', 'July', 'August',
     'September', 'October', 'November', 'December'
   ];
-const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
-    const [vehicleSelectData , setvehicleSelectData] = useState([]);
-    const {setVehicle  ,image ,vehId } = useVehicleStore();
+const HomePageWithVehicles = ({vehiclesData ,navigation }) => {
+    const {setVehicle  ,image ,vehId , name } = useVehicleStore();
     const [mileage , setMileage] = useState(null);
     const [avMileage , setAvMileage] = useState(null);
     const [ priceChartData , setPriceChartData] = useState([]);
@@ -28,26 +29,7 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
     const realm = useRealm();
     const {VehiclesArray} = useVehicleArrayStore();
     const {curVehId , setRefuelState , refuelDatas} = useRefuelTriggerStore();
-    const getSelectData = ()=>{
-        let selectData = [];
-        vehiclesData.map((vehicleData) =>{
-            
-            selectData.push({label : vehicleData.name , value : vehicleData._id});
-            if(vehicleData._id.equals(vehId)){
-                const t = selectData[0];
-                selectData[0] = selectData[selectData.length - 1];
-                selectData[selectData.length - 1] = t;
-            }
-        })
-        
-        setvehicleSelectData(selectData);
-    }
 
-    useEffect(()=>{
-        getSelectData();
-
-    } , [ vehId , VehiclesArray])
-  
       useEffect(()=>{
         getRefuelingDataOfVeh();
       } , [])
@@ -79,10 +61,6 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
       }
   
       const getPriceChartData = (curRefuelingData)=>{
-        // if(curRefuelingData.length > 0)
-        //   setIsRefuelingData(true)
-        // else  
-        //   setIsRefuelingData(false)
         let monthsArr =[0 , 0, 0 ,0 , 0 , 0, 0, 0 ,0 , 0 , 0 , 0]
         for(let i = 0;i<curRefuelingData.length ; i++){
             const month = curRefuelingData[i].date.getMonth();
@@ -138,20 +116,14 @@ const HomePageWithVehicles = ({vehiclesData ,navigation}) => {
 
     
     // console.log("x" , latestRefuelingData.length ,mileage ,avMileage  ,priceChartData.length);
-
+    // console.log(load3, load1 , load2 , priceChartData.length ,mileage ,avMileage,latestRefuelingData.length);
+   
   return (
     <View style={styles.container}>
         <Text style={styles.welcome}>Here is everything about your</Text>
         {
-          vehicleSelectData.length > 0 &&
-        <RNPickerSelect
-             placeholder={{}}
-            // value={id}
-            value = ""
-            style={{...pickerSelectStyles}}
-            onValueChange={(value) => handleSelectChange(value)}
-            items={vehicleSelectData}
-        />
+          VehiclesArray.length > 0 &&
+          <Picker name={name} list={VehiclesArray} handleSelectChange={handleSelectChange} conStyles={170}/>
         }
         <View style={styles.imageContainer}>
         <Image style={styles.image} source={image.length > 300 ? { uri: `data:image/png;base64,${image}` } : {uri :image}}/>
@@ -180,7 +152,15 @@ const styles = StyleSheet.create({
         marginTop : 20,
         borderColor : "white",
         borderWidth : 8,
-        borderRadius : 8
+        borderRadius : 8,
+    },loadingContainer :{
+      marginTop : 100,
+      // backgroundColor : 'red',
+      // height : '200%'
+      // height : 100,
+      // width  :100
+    },conStyles :{
+      width : 170
     }
 })
 
@@ -216,7 +196,7 @@ const pickerSelectStyles = StyleSheet.create({
       textAlign : 'center',
       borderRadius : 5
 
-    },
+    }
   });
 
 export default HomePageWithVehicles

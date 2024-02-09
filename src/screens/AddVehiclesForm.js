@@ -11,6 +11,7 @@ import {launchCamera} from 'react-native-image-picker';
 import { Vehicles } from '../Database/models/VehiclesSchema';
 import DoubleButton from '../components/Buttons/DoubleButton';
 import useVehicleArrayStore from '../state/VehiclesArray';
+import Picker from '../components/Picker/Picker';
 var RNFS = require('react-native-fs');  
 
 
@@ -115,20 +116,27 @@ const handlePress = ()=>{
         <View style={styles.inputContainer}>
             <TextInput  onChangeText={(text)=>handleFieldChange('name' , text)} style={styles.input} placeholder='Vehicle Name'/>
             {errors.name && <Text style={styles.error}>{errors.name}</Text>}
-            <RNPickerSelect
+           <Picker name={'Vehicle Type'} list={[
+                { name: '2 Wheeler', _id: '2' },
+                { name: '3 Wheeler', _id: '3' },
+                { name: '4 Wheeler', _id: '4' },
+                { name: 'other', value: 'other' },
+            ]} handleSelectChange={handleFieldChange} conStyles={300} type='type'/>
+            
+            {/* <RNPickerSelect
             style={{...pickerSelectStyles}}
             placeholder={{
-                label: 'Vehicle Type',
+                name: 'Vehicle Type',
                 value: null,
               }}
             onValueChange={(value) => handleFieldChange('type' , parseInt(value))}
             items={[
-                { label: '2 Wheeler', value: '2' },
-                { label: '3 Wheeler', value: '3' },
-                { label: '4 Wheeler', value: '4' },
-                { label: 'other', value: 'other' },
+                { name: '2 Wheeler', value: '2' },
+                { name: '3 Wheeler', value: '3' },
+                { name: '4 Wheeler', value: '4' },
+                { name: 'other', value: 'other' },
             ]}
-            />
+            /> */}
             {errors.type && <Text style={styles.error}>{errors.type}</Text>}
             <TextInput val={data.engine} onChangeText={(text)=>handleFieldChange('engine' , text)} style={styles.input} placeholder='Engine CC'/>
             {errors.engine && <Text style={styles.error}>{errors.engine}</Text>}

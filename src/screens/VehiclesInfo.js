@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet ,Pressable , Image , ScrollView } from 'react-native'
 import VehicleCard from '../components/VehicleCard'
-import { useQuery, useRealm } from '@realm/react'
-import { Vehicles } from '../Database/models/VehiclesSchema'
-import useUserStore from '../state/Users'
 import AddVehicle from '../components/AddVehicle'
 import useVehicleArrayStore from '../state/VehiclesArray'
 
@@ -53,7 +50,8 @@ const styles = StyleSheet.create({
     backgroundColor : '#F0F2F2',
     // backgroundColor:'yellow'
   },heading : {
-    fontSize : 25,
+    fontSize : 30,
+    // fontWeight : 'bold',
     color : '#0B3C58',
     textAlign : 'center',
     paddingVertical : 20,

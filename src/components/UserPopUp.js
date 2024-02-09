@@ -40,6 +40,7 @@ const UserPopUp = ({navigation}) => {
 
     deleteVehiclesState();
     resetRefuelState();
+    navigation.closeDrawer();
     navigation.navigate('login');
   }
 
@@ -72,7 +73,7 @@ const UserPopUp = ({navigation}) => {
         realm.delete(toDeleteVehicles);
         realm.delete(toDeleteRefueling);
       })
-
+      navigation.closeDrawer();
       navigation.navigate('login');
   }
 
