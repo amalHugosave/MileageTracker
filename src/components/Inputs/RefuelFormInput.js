@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, View,TextInput,Text} from 'react-native'
 
-const RefuelFormInput = ({placeholder ,handleData , id ,val}) => {
+const RefuelFormInput = ({placeholder ,handleData , id ,val ,Style}) => {
     const [focus , setFocus] = useState(false);
     const [value , setValue] = useState(val);
     console.log(typeof(val) , "val");
@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
         width : 144,
         borderRadius : 4,
         paddingHorizontal : 10,
-        justifyContent : 'center'
+        justifyContent : 'center',
+        padding : 5
     },inputNotFocused : {
         fontSize : 16,
         color : 'gray'

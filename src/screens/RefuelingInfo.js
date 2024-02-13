@@ -18,37 +18,16 @@ const RefuelingInfo = ({navigation}) => {
     const realm = useRealm();
     const {id} = useUserStore();
     const {vehId , name ,setVehicle} = useVehicleStore();
-    const [userVehicles , setUservehicles] = useState([]);
     const {refuelDatas , setRefuelState ,curVehId} = useRefuelTriggerStore();
-    // console.log(refuelDatas , "refuelDatas")
-
-
+    
+    // console.log(name , "name");  
     useEffect (()=>{
-        console.log("yes" ,refuelDatas.length)
         getRefuelingDataOfVeh();
     }, [])
 
     const getRefuelingDataOfVeh = ()=>{
             const curRefuelingData = realm.objects(Refueling).filtered('vehId == $0' , vehId).sorted('date' , true);
             setRefuelState({curVehId : vehId , refuelDatas : [...curRefuelingData]});
-    }
-    const getvehiclesOfUser = ()=>{
-        
-        let arr = [];
-        VehiclesArray.map((veh)=>{
-            arr.push({label : veh.name , value : veh._id})
-
-            if(vehId && veh._id.equals(vehId)){
-    
-                const t = arr[0];
-                arr[0] = arr[arr.length - 1];
-                arr[arr.length - 1] = t;
-            }
-        })
-        
-        setUservehicles(arr);
-
-
     }
 
     const handleSelectChange = (value)=>{
@@ -73,15 +52,7 @@ const RefuelingInfo = ({navigation}) => {
             <Text style={styles.heading}>Refueling</Text>
             {
                 VehiclesArray.length > 0 &&(
-                    // <RNPickerSelect
-                    
-                    // style={{...pickerSelectStyles}}
-                    // placeholder={{}}
-                    // value = ""
-                    // onValueChange={(value) => {handleSelectChange(value)}}
-                    // items={userVehicles}
-                    // />
-                    <Picker name={name} list={VehiclesArray} handleSelectChange={handleSelectChange} conStyles={300}/>
+                     <Picker name={name} list={VehiclesArray} handleSelectChange={handleSelectChange} conStyles={300}/>
                     
                 )
             }

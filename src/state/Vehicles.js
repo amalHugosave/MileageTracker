@@ -1,12 +1,12 @@
 import { create } from 'zustand'
-
+import { BSON } from 'realm';
 const useVehicleStore = create((set) => ({
     name: '',
     type : 0,
     image : '',
     engine : '',
-    vehId : '',
-    userId : '',
+    vehId : new BSON.ObjectId(),
+    userId : new BSON.ObjectId(),
     setVehicle : (newState) => {
         // console.log("y");
         set((state) => (newState))

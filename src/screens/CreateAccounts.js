@@ -11,7 +11,9 @@ import CommonButton from '../components/Buttons/CommonButton'
 // import { useUserStore } from '../state/Users'
 
 
-const CreateAccounts = ({navigation}) => {
+const CreateAccounts = ({navigation , route}) => {
+
+    const handlePress = route?.params?.handlePress;
     const {name , nickname , email , setUser} = useUserStore();
     const realm = useRealm();
     const [checked , setChecked] = useState(false);
@@ -27,16 +29,21 @@ const CreateAccounts = ({navigation}) => {
         navigation.navigate('setPasscode')
 
     }
-
+    console.log(data , "data");
     const handleInputs =  (index , changedData)=>{
-        data[index] = changedData;
-        setData(data);
+        console.log("y" , index , changedData);
+        setData((state)=>{
+            const newState = [...state];
+            newState[index] = changedData;
+            return newState;
+        });
     }
 
     const nameCheck = (name) =>{
         const regex = /[0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
         return !regex.test(name);
     }
+
 
     function isValidGmail(email) {
         const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
@@ -63,12 +70,12 @@ const CreateAccounts = ({navigation}) => {
         
 
         <View style = {styles.top}>
-            <BackButton style={styles.image} navigation={navigation}/>
+            <BackButton style={styles.image} navigation={navigation} handlePress={handlePress}/>
             <Text style={styles.heading}>Create Account</Text>
             <View style={styles.inputscontainer}>
                 <InputWithText value={data[0]}  handleError={handleError} text='Name' required={true} handleInputs={handleInputs} id={0} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
-                <InputWithText alue={data[1]} handleError={handleError} text='Nickname' required={false} handleInputs={handleInputs} id={1} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
-                <InputWithText alue={data[2]} handleError={handleError} text='Email Address' required={true} handleInputs={handleInputs} id={2} errorText='Invalid email' validationFun={isValidGmail}/>
+                <InputWithText value={data[1]} handleError={handleError} text='Nickname' required={false} handleInputs={handleInputs} id={1} errorText='you cannot include Symbols or Numbers' validationFun={nameCheck}/>
+                <InputWithText value={data[2]} handleError={handleError} text='Email Address' required={true} handleInputs={handleInputs} id={2} errorText='Invalid email' validationFun={isValidGmail}/>
             </View>
         </View>
         <View style={styles.bottom}>

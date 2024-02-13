@@ -14,11 +14,13 @@ const rnpData = [
     {name : 'Last 7 Days' , _id : 0},
 ]
 const RefuelingBox = ({data , navigation}) => {
+    console.log(rnpData[0])
     const today = moment();
     const [filteredData , setFilteredData] = useState(data); 
     const [value , setvalue] = useState(3);
     const allRefueling = useQuery(Refueling);
-
+    const [rnpDataName , setRnpDataName] = useState(rnpData[0].name);
+    // console.log(rnpDataName);
     useEffect(()=>{
         handleSelectChange(value);
     } , [allRefueling]);
@@ -29,16 +31,20 @@ const RefuelingBox = ({data , navigation}) => {
         const date =new Date();
         if(value == 1){
             date.setDate(current.getDate() - 30);
-            setvalue(1)
+            setvalue(1);
+            setRnpDataName(rnpData[2].name);
         }else if(value == 0){
             date.setDate(current.getDate() - 7);
-            setvalue(0)
+            setvalue(0);
+            setRnpDataName(rnpData[3].name);
         }else if(value == 2){
             date.setFullYear(current.getFullYear() - 1);
             setvalue(2)
+            setRnpDataName(rnpData[1].name);
         }else{
             setFilteredData(data);
             setvalue(3)
+            setRnpDataName(rnpData[0].name);
             return;
         }
         // console.log(date.toString());
@@ -48,8 +54,8 @@ const RefuelingBox = ({data , navigation}) => {
     }
   return (
     <View style={styles.container}>
-        <View>
-        <Picker name={rnpData[0].name} list={rnpData} handleSelectChange={handleSelectChange} conStyles={175}/>
+        <View style={styles.PickerCont}>
+        <Picker name={rnpDataName} list={rnpData} handleSelectChange={handleSelectChange} conStyles={175}/>
             {/* <RNPickerSelect
                 style={{...pickerSelectStyles}}
                 placeholder={{}}
@@ -83,6 +89,8 @@ const styles = StyleSheet.create({
         marginTop : 20
     },refuelingDataBox : {
         marginTop : 30
+    },PickerCont:{
+        zIndex : 1
     }
 })
 

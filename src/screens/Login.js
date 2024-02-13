@@ -38,7 +38,7 @@ const Login = ({navigation}) => {
     }
 
     const goToCreateAccount = (data)=>{
-        navigation.navigate('createAccount');  
+        navigation.navigate('createAccount' , {handlePress : ()=>navigation.navigate('login')});  
     }
   return (
     <LinearGradient style={{flex : 1}}  colors={['#C5E3DC', '#F6F6EC']} >

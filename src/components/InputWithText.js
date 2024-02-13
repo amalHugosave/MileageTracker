@@ -3,7 +3,7 @@ import { View  ,StyleSheet, TextInput , Text} from 'react-native'
 
 const InputWithText = ({value ,text,required , handleInputs , id, errorText , validationFun , handleError}) => {
     const [error , setError] = useState(false);
-    const [val , setVal] = useState(value);
+    // const [val , setVal] = useState(value);
     const onChangeInput = (text)=>{
         handleInputs(id , text);
         if(required && !text){
@@ -15,11 +15,13 @@ const InputWithText = ({value ,text,required , handleInputs , id, errorText , va
         setError(!validationFun(text));
         // console.log("y" ,error, !validationFun(text));
         handleError(id ,!validationFun(text));
-    }
+    } 
+
+    
   return (
     <View style ={styles.container}>
         <Text style={styles.InputText}>{text} {required && <Text style={styles.star}>*</Text>}</Text>
-        <TextInput  value={val} style={styles.input} onChangeText={(text) =>{onChangeInput(text); setVal(text)}}/>
+        <TextInput  value={value} style={styles.input} onChangeText={(text) =>{onChangeInput(text)}}/>
         {error && <Text style={styles.error}>{errorText}</Text>}
     </View>
   )

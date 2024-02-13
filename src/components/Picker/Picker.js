@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
 import { SafeAreaView, StyleSheet , Image ,FlatList , View ,Text, TouchableOpacity , Pressable ,TouchableHighlight} from 'react-native'
 
-const Picker = ({name, list ,handleSelectChange ,conStyles , type}) => {
+const Picker = ({name, list ,handleSelectChange ,conStyles , type , Styles}) => {
 
     const [ open , setopen]  = useState(false);
-    const [curName , setCurName] = useState(name);
 
 const handleButtonPress = ()=>{
     setopen((state)=>!state)
 }
 const handlePress = (id , Name)=>{
     setopen(false)
-    setCurName(Name)
     if(type)
         handleSelectChange(type , parseInt(id))
-        
     else
         handleSelectChange(id);
         
@@ -24,7 +21,7 @@ const handlePress = (id , Name)=>{
    <SafeAreaView style={styles.container}>
 
     <Pressable onPress={handleButtonPress} style={[styles.button , {width : conStyles}]}>
-        <Text style={styles.buttonText}>{curName}</Text>
+        <Text style={[styles.buttonText , Styles]}>{name}</Text>
         <Image style ={styles.buttonImage} source={require('../../rcs/downArrow.png')} />
     </Pressable>
 

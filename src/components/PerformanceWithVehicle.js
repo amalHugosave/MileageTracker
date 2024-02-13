@@ -66,23 +66,19 @@ const PerformanceWithVehicle = ({navigation ,userVehicles}) => {
       const curMonth = new Date().getMonth();
       for(let i = 4;i>=0;i--){
           const month = (curMonth - i + 12)%12 ;
-          const obj = {month :  months[month], mileage : parseFloat(fuelCon[month] === 0 ? 0 : (dist[month]/fuelCon[month]).toFixed(2))}
+          const obj = {month :  months[month], mileage : fuelCon[month] === 0 ? null : parseFloat( (dist[month]/fuelCon[month]).toFixed(2))};
           arr.push(obj);
       }
       setMileageChartData(arr);
 
     }
+    // console.log(mileageChartData , "mileage")
 
     useEffect(()=>{
         getChartData();
     }, [refuelDatas])
     // console.log(refuelDatas);
-     const data = [
-    { month: 'sept', price: 13000 },
-    { month: 'oct', price: 16500 },
-    { month: 'nov', price: 14250 },
-    { month: 'dec', price: 19000 }
-  ];
+
     const handleSelectChange = (value)=>{
         const objectId = new ObjectId(value);
         const obj = realm.objects(Vehicles).filtered('_id == $0' , objectId)[0];
